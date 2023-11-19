@@ -1,4 +1,4 @@
-package pl.cottageconnect.security.filter;
+package pl.cottageconnect.security.configuration;
 
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.cottageconnect.security.service.JwtService;
-import pl.cottageconnect.security.service.UserInfoService;
 
 import java.io.IOException;
 
@@ -22,7 +20,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private JwtService jwtService;
-    private UserInfoService userDetailsService;
+    private CottageConnectUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(

@@ -1,4 +1,4 @@
-package pl.cottageconnect.security.config;
+package pl.cottageconnect.security.configuration;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.cottageconnect.security.filter.JwtAuthFilter;
-import pl.cottageconnect.security.service.UserInfoService;
 
 @Configuration
 @EnableWebSecurity
@@ -27,11 +25,11 @@ import pl.cottageconnect.security.service.UserInfoService;
 public class SecurityConfiguration {
 
     private final JwtAuthFilter authFilter;
-    private final UserInfoService userInfoService;
+    private final CottageConnectUserDetailsService cottageConnectUserDetailsService;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return userInfoService;
+        return cottageConnectUserDetailsService;
     }
 
     @Bean
@@ -40,8 +38,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
-                        .requestMatchers("/api/v1/auth/user/**").authenticated()
-                        .requestMatchers("/api/v1/auth/admin/**").authenticated()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/hello").authenticated()
                         .requestMatchers("/api/v1/users").authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

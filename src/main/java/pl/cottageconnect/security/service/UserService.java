@@ -8,16 +8,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.cottageconnect.security.configuration.JwtService;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequest;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponse;
 import pl.cottageconnect.security.controller.dto.ChangePasswordRequest;
 import pl.cottageconnect.security.domain.User;
 import pl.cottageconnect.security.entity.RoleEntity;
 import pl.cottageconnect.security.enums.RoleEnum;
+import pl.cottageconnect.security.exception.EmailAlreadyExistsException;
+import pl.cottageconnect.security.exception.InvalidPasswordException;
+import pl.cottageconnect.security.exception.PasswordMismatchException;
 import pl.cottageconnect.security.service.dao.UserDAO;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,6 +36,12 @@ public class UserService {
 
     @Transactional
     public AuthenticationResponse register(User user, RoleEnum role) {
+        Optional<User> existingUser = userDAO.findByEmail(user.getEmail());
+        if (existingUser.isPresent()) {
+            throw new EmailAlreadyExistsException
+                    ("Email address: [%s] already exists. Please use a different email."
+                            .formatted(user.getEmail()));
+        }
         User toSave = buildUser(user, role);
         String email = user.getEmail();
         userDAO.save(toSave);
@@ -69,10 +80,10 @@ public class UserService {
         User user = userDAO.findByEmail(email).orElseThrow();
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new IllegalStateException("Wrong password");
+            throw new InvalidPasswordException("Wrong password");
         }
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-            throw new IllegalStateException("Password are not the same");
+            throw new PasswordMismatchException("Password are not the same");
         }
         User toSave = user.withPassword(passwordEncoder.encode(request.getNewPassword()));
 

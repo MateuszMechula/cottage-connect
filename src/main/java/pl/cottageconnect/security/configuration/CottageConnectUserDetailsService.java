@@ -1,4 +1,4 @@
-package pl.cottageconnect.security.service;
+package pl.cottageconnect.security.configuration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserInfoService implements UserDetailsService {
+public class CottageConnectUserDetailsService implements UserDetailsService {
 
     private final UserDAO userDAO;
 
@@ -21,7 +21,7 @@ public class UserInfoService implements UserDetailsService {
 
         Optional<User> userDetail = userDAO.findByEmail(username);
 
-        return userDetail.map(UserInfoDetails::new)
+        return userDetail.map(CottageConnectUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }
 }

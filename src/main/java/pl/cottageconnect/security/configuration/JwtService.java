@@ -1,4 +1,4 @@
-package pl.cottageconnect.security.service;
+package pl.cottageconnect.security.configuration;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
