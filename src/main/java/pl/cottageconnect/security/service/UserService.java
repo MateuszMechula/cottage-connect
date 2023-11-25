@@ -9,9 +9,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.cottageconnect.security.configuration.JwtService;
-import pl.cottageconnect.security.controller.dto.AuthenticationRequest;
-import pl.cottageconnect.security.controller.dto.AuthenticationResponse;
-import pl.cottageconnect.security.controller.dto.ChangePasswordRequest;
+import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
+import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
+import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
+import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 import pl.cottageconnect.security.domain.User;
 import pl.cottageconnect.security.entity.RoleEntity;
 import pl.cottageconnect.security.enums.RoleEnum;
@@ -35,27 +36,29 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public AuthenticationResponse register(User user, RoleEnum role) {
-        Optional<User> existingUser = userDAO.findByEmail(user.getEmail());
+    public AuthenticationResponseDTO register(RegistrationRequestDTO request) {
+
+        Optional<User> existingUser = userDAO.findByEmail(request.getEmail());
+
         if (existingUser.isPresent()) {
             throw new EmailAlreadyExistsException
                     ("Email address: [%s] already exists. Please use a different email."
-                            .formatted(user.getEmail()));
+                            .formatted(request.getEmail()));
         }
-        User toSave = buildUser(user, role);
-        String email = user.getEmail();
+        User toSave = buildUser(request);
+        String email = toSave.getEmail();
         userDAO.save(toSave);
         var jwtToken = jwtService.generateToken(email);
         var refreshToken = jwtService.createRefreshToken(email);
 
-        return AuthenticationResponse.builder()
+        return AuthenticationResponseDTO.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
     @Transactional
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponseDTO authenticate(AuthenticationRequestDTO request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -65,7 +68,7 @@ public class UserService {
             var jwtToken = jwtService.generateToken(request.getEmail());
             var refreshToken = jwtService.createRefreshToken(request.getEmail());
 
-            return AuthenticationResponse.builder()
+            return AuthenticationResponseDTO.builder()
                     .accessToken(jwtToken)
                     .refreshToken(refreshToken)
                     .build();
@@ -75,9 +78,11 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
+    public void changePassword(ChangePasswordRequestDTO request, Principal connectedUser) {
         var email = connectedUser.getName();
-        User user = userDAO.findByEmail(email).orElseThrow();
+        User user = userDAO.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException
+                        ("User email: [%s] not found".formatted(email)));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Wrong password");
@@ -90,11 +95,11 @@ public class UserService {
         userDAO.save(toSave);
     }
 
-    private User buildUser(User user, RoleEnum role) {
+    private User buildUser(RegistrationRequestDTO request) {
         return User.builder()
-                .email(user.getEmail())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .roles(assignRoles(role.toString()))
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roles(assignRoles(request.getRole()))
                 .build();
     }
 

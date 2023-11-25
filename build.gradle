@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
 }
@@ -9,6 +10,9 @@ version = '1.0'
 
 java {
     sourceCompatibility = '17'
+}
+jacoco {
+    toolVersion = "0.8.10"
 }
 bootJar {
     archiveFileName = "cottageconnect.${archiveExtension.get()}"
@@ -30,6 +34,7 @@ dependencies {
 
     //db
     implementation 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     runtimeOnly 'org.postgresql:postgresql'
 
     // api create swagger documentation
@@ -47,13 +52,18 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
 
-
+    //test
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+
+    //integration test
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
 }
 
 
@@ -66,6 +76,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    finalizedBy jacocoTestReport
 }
 
 compileJava.options.encoding = 'UTF-8'

@@ -7,42 +7,50 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import pl.cottageconnect.security.controller.dto.AuthenticationRequest;
-import pl.cottageconnect.security.controller.dto.AuthenticationResponse;
-import pl.cottageconnect.security.controller.dto.RegistrationRequest;
-import pl.cottageconnect.security.controller.dto.mapper.UserMapperDTO;
-import pl.cottageconnect.security.domain.User;
-import pl.cottageconnect.security.enums.RoleEnum;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
+import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
+import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 import pl.cottageconnect.security.service.UserService;
 
+import static pl.cottageconnect.security.controller.AuthenticationController.BASE_PATH;
+
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(value = BASE_PATH)
 @AllArgsConstructor
 @Tag(name = "auth", description = "Endpoints for user authentication")
 public class AuthenticationController {
+    public static final String BASE_PATH = "/api/v1/auth";
+    public static final String REGISTER_PATH = "/register";
+    public static final String AUTHENTICATE_PATH = "/authenticate";
 
     private final UserService service;
-    private final UserMapperDTO userMapperDTO;
 
-    @Operation(summary = "Register a new user", description = "Registers a new user with the specified role.")
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> registerUser(
-            @RequestBody @Valid RegistrationRequest registrationRequest,
-            @RequestParam RoleEnum role) {
+    @Operation(
+            summary = "Register a new user",
+            description = "Registers a new user with the specified role."
+    )
+    @PostMapping(value = REGISTER_PATH)
+    public ResponseEntity<AuthenticationResponseDTO> registerUser(
+            @RequestBody @Valid RegistrationRequestDTO registrationRequestDTO) {
 
-        User user = userMapperDTO.mapToUser(registrationRequest, role);
-        AuthenticationResponse authenticationResponse = service.register(user, role);
+        AuthenticationResponseDTO authenticationResponseDTO = service.register(registrationRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(authenticationResponseDTO);
     }
 
-    @Operation(summary = "Authenticate user and get token", description = "Authenticates a user and returns an authentication token.")
-    @PostMapping("/authenticate")
-    public AuthenticationResponse authenticateAndGetToken(
-            @RequestBody AuthenticationRequest authenticationRequest) {
+    @Operation(
+            summary = "Authenticate user and get token",
+            description = "Authenticates a user and returns an authentication token."
+    )
+    @PostMapping(value = AUTHENTICATE_PATH)
+    public AuthenticationResponseDTO authenticateAndGetToken(
+            @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
-        return service.authenticate(authenticationRequest);
+        return service.authenticate(authenticationRequestDTO);
     }
 }
 
