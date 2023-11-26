@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import pl.cottageconnect.comment.entity.CommentEntity;
 import pl.cottageconnect.like.entity.LikeEntity;
-import pl.cottageconnect.village.entity.VillagePost;
+import pl.cottageconnect.village.entity.VillagePostEntity;
 
 import java.util.Set;
 
@@ -34,13 +34,13 @@ public class UserEntity {
     )
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<LikeEntity> likes;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<VillagePost> posts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<VillagePostEntity> posts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CommentEntity> comments;
 }
 

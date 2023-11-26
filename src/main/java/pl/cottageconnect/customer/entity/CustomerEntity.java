@@ -32,6 +32,6 @@ public class CustomerEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<ReservationEntity> reservations;
 }

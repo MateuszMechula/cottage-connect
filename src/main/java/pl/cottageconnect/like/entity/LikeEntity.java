@@ -19,12 +19,13 @@ public class LikeEntity {
     private Long likeId;
 
     @Column(name = "likeable_type")
+    @Enumerated(EnumType.STRING)
     private LikeableType type;
 
     @Column(name = "likeable_id")
     private Long likeableId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userId;
 

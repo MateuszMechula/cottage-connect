@@ -28,17 +28,17 @@ public class VillageEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "village")
-    @JoinColumn(name = "address_id")
-    private AddressEntity address;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private OwnerEntity owner;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "village")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "village")
+    @JoinColumn(name = "address_id")
+    private AddressEntity address;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "village")
     private Set<CottageEntity> cottages;
 
-    @OneToMany(mappedBy = "village", cascade = CascadeType.ALL)
-    private Set<VillagePost> posts;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "village")
+    private Set<VillagePostEntity> posts;
 }

@@ -37,7 +37,7 @@ public class CottageEntity {
     @JoinColumn(name = "village_id")
     private VillageEntity village;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cottage")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cottage", cascade = CascadeType.ALL)
     private Set<ReservationEntity> reservations;
 
 }

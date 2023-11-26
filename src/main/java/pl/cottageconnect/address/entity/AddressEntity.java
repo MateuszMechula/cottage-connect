@@ -33,8 +33,6 @@ public class AddressEntity {
     @Column(name = "country")
     private String country;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     private VillageEntity village;
-
-
 }

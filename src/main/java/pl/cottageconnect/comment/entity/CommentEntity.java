@@ -22,6 +22,7 @@ public class CommentEntity {
     private String content;
 
     @Column(name = "commentable_type")
+    @Enumerated(EnumType.STRING)
     private CommentableType type;
 
     @Column(name = "commentable_id")
@@ -30,7 +31,7 @@ public class CommentEntity {
     @Column(name = "rating")
     private Integer rating;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }
