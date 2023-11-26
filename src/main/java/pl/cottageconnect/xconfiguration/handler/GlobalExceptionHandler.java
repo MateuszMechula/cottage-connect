@@ -1,4 +1,4 @@
-package pl.cottageconnect.handler;
+package pl.cottageconnect.xconfiguration.handler;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityNotFoundException;

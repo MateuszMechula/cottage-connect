@@ -2,6 +2,9 @@ package pl.cottageconnect.security.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.cottageconnect.comment.entity.CommentEntity;
+import pl.cottageconnect.like.entity.LikeEntity;
+import pl.cottageconnect.village.entity.VillagePost;
 
 import java.util.Set;
 
@@ -30,5 +33,14 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roles;
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    private Set<LikeEntity> likes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<VillagePost> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<CommentEntity> comments;
 }
 

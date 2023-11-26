@@ -1,4 +1,4 @@
-package pl.cottageconnect.handler;
+package pl.cottageconnect.xconfiguration.handler;
 
 import lombok.Getter;
 
