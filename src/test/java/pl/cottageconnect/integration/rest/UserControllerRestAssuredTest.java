@@ -11,7 +11,7 @@ import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 
 import static pl.cottageconnect.util.TestDataFactoryUser.testChangePasswordRequest;
-import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequest;
+import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequestCustomer;
 
 public class UserControllerRestAssuredTest
         extends RestAssuredIntegrationTestBase
@@ -20,7 +20,7 @@ public class UserControllerRestAssuredTest
     @Test
     void shouldChangePasswordForUser() {
         //given
-        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequest();
+        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequestCustomer();
         ChangePasswordRequestDTO changePasswordRequestDTO = testChangePasswordRequest();
         //when
         AuthenticationResponseDTO authenticationResponseDTO = registerUser(registrationRequestDTO);

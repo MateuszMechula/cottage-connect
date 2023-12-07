@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "_reservation")
+@EqualsAndHashCode(of = "reservationId")
 public class ReservationEntity {
 
     @Id

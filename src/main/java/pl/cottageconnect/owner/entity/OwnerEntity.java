@@ -13,13 +13,14 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "_owner")
+@EqualsAndHashCode(of = "ownerId")
 public class OwnerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @Column(name = "firsname")
+    @Column(name = "firstname")
     private String firstname;
 
     @Column(name = "lastname")
@@ -31,6 +32,6 @@ public class OwnerEntity {
     @Column(name = "user_id")
     private Integer userId;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "owner")
     private Set<VillageEntity> village;
 }

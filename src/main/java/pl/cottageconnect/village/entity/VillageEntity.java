@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "_village")
+@EqualsAndHashCode(of = "villageId")
 public class VillageEntity {
 
     @Id
@@ -32,7 +33,7 @@ public class VillageEntity {
     @JoinColumn(name = "owner_id")
     private OwnerEntity owner;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "village")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private AddressEntity address;
 

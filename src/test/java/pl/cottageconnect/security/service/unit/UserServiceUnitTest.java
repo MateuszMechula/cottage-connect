@@ -9,6 +9,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.cottageconnect.customer.domain.Customer;
+import pl.cottageconnect.customer.service.dao.CustomerDAO;
+import pl.cottageconnect.owner.domain.Owner;
+import pl.cottageconnect.owner.service.dao.OwnerDAO;
 import pl.cottageconnect.security.configuration.JwtService;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
@@ -34,6 +38,10 @@ class UserServiceUnitTest {
     @Mock
     private UserDAO userDAO;
     @Mock
+    private OwnerDAO ownerDAO;
+    @Mock
+    private CustomerDAO customerDAO;
+    @Mock
     private JwtService jwtService;
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -43,12 +51,36 @@ class UserServiceUnitTest {
     private UserService userService;
 
     @Test
-    void shouldRegisterUserSuccessfully() {
+    void shouldRegisterUserSuccessfullyWithRoleCustomer() {
         //given
         User user = testUser();
-        RegistrationRequestDTO request = testRegistrationRequest();
+        Customer customer = testCustomer();
+        RegistrationRequestDTO request = testRegistrationRequestCustomer();
 
         when(userDAO.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(userDAO.save(user)).thenReturn(user);
+        when(customerDAO.save(customer)).thenReturn(customer);
+        when(jwtService.generateToken(anyString())).thenReturn(TEST_ACCESS_TOKEN);
+        when(jwtService.createRefreshToken(anyString())).thenReturn(TEST_REFRESH_TOKEN);
+        //when
+        AuthenticationResponseDTO response = userService.register(request);
+
+        //then
+        assertNotNull(response);
+        assertEquals(TEST_ACCESS_TOKEN, response.getAccessToken());
+        assertEquals(TEST_REFRESH_TOKEN, response.getRefreshToken());
+    }
+
+    @Test
+    void shouldRegisterUserSuccessfullyWithRoleOwner() {
+        //given
+        User user = testUser();
+        Owner owner = testOwner();
+        RegistrationRequestDTO request = testRegistrationRequestOwner();
+
+        when(userDAO.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(userDAO.save(user)).thenReturn(user);
+        when(ownerDAO.save(owner)).thenReturn(owner);
         when(jwtService.generateToken(anyString())).thenReturn(TEST_ACCESS_TOKEN);
         when(jwtService.createRefreshToken(anyString())).thenReturn(TEST_REFRESH_TOKEN);
         //when
@@ -64,7 +96,7 @@ class UserServiceUnitTest {
     void shouldThrowExceptionWhenEmailAlreadyExists() {
         //given
         User user = testUser();
-        RegistrationRequestDTO request = testRegistrationRequest();
+        RegistrationRequestDTO request = testRegistrationRequestCustomer();
 
         when(userDAO.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 

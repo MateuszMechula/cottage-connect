@@ -9,7 +9,7 @@ import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.cottageconnect.util.TestDataFactoryUser.testAuthenticationRequest;
-import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequest;
+import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequestCustomer;
 
 public class AuthenticationControllerRestAssuredTest
         extends RestAssuredIntegrationTestBase
@@ -18,7 +18,7 @@ public class AuthenticationControllerRestAssuredTest
     @Test
     void shouldRegisterUserSuccessfully() {
         //given
-        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequest();
+        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequestCustomer();
         //when
         AuthenticationResponseDTO authenticationResponseDTO = registerUser(registrationRequestDTO);
         //then
@@ -31,7 +31,7 @@ public class AuthenticationControllerRestAssuredTest
     void shouldAuthenticateSuccessfully() {
         //given
         AuthenticationRequestDTO authenticationRequestDTO = testAuthenticationRequest();
-        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequest();
+        RegistrationRequestDTO registrationRequestDTO = testRegistrationRequestCustomer();
         //when
         registerUser(registrationRequestDTO);
         AuthenticationResponseDTO authenticationResponseDTO = authenticateAndGetToken(authenticationRequestDTO);

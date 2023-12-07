@@ -38,7 +38,7 @@ class AuthenticationControllerWebMvcTest {
     @Test
     void shouldRegisterUserSuccessfully() throws Exception {
         //given
-        RegistrationRequestDTO request = testRegistrationRequest();
+        RegistrationRequestDTO request = testRegistrationRequestCustomer();
         AuthenticationResponseDTO response = testAuthenticationResponse();
         String requestBody = objectMapper.writeValueAsString(request);
 

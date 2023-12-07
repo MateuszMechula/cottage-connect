@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "_user")
+@EqualsAndHashCode(of = "userId")
 public class UserEntity {
 
     @Id

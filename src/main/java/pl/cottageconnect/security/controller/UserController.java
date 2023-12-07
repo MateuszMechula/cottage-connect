@@ -3,7 +3,7 @@ package pl.cottageconnect.security.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +18,7 @@ import static pl.cottageconnect.security.controller.UserController.BASE_PATH;
 
 @RestController
 @RequestMapping(value = BASE_PATH)
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "user", description = "Endpoints for managing user-related operations")
 @SecurityRequirement(name = "bearer-token")
 public class UserController {

@@ -3,8 +3,8 @@ package pl.cottageconnect.security.configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.cottageconnect.security.domain.Role;
 import pl.cottageconnect.security.domain.User;
-import pl.cottageconnect.security.entity.RoleEntity;
 
 import java.util.Collection;
 import java.util.List;
@@ -19,7 +19,7 @@ public class CottageConnectUserDetails implements UserDetails {
     public CottageConnectUserDetails(User user) {
         username = user.getEmail();
         password = user.getPassword();
-        authorities = user.getRoles().stream().map(RoleEntity::getRole)
+        authorities = user.getRoles().stream().map(Role::getRole)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

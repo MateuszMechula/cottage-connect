@@ -11,6 +11,7 @@ import pl.cottageconnect.village.entity.VillageEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "_address")
+@EqualsAndHashCode(of = "addressId")
 public class AddressEntity {
 
     @Id
@@ -33,6 +34,6 @@ public class AddressEntity {
     @Column(name = "country")
     private String country;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "address")
     private VillageEntity village;
 }

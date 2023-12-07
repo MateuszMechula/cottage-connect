@@ -8,5 +8,5 @@ public interface UserDAO {
 
     Optional<User> findByEmail(String username);
 
-    void save(User user);
+    User save(User user);
 }

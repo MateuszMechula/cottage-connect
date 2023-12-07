@@ -13,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "_customer")
+@EqualsAndHashCode(of = "customerId")
 public class CustomerEntity {
 
     @Id
@@ -20,7 +21,7 @@ public class CustomerEntity {
     @Column(name = "customer_id")
     private Long customerId;
 
-    @Column(name = "firsname")
+    @Column(name = "firstname")
     private String firstname;
 
     @Column(name = "lastname")

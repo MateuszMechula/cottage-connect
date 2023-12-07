@@ -12,6 +12,7 @@ import pl.cottageconnect.security.entity.UserEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "_like")
+@EqualsAndHashCode(of = "likeId")
 public class LikeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

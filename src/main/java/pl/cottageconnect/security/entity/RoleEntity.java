@@ -1,10 +1,7 @@
 package pl.cottageconnect.security.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -12,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "_role")
+@EqualsAndHashCode(of = "roleId")
 public class RoleEntity {
 
     @Id

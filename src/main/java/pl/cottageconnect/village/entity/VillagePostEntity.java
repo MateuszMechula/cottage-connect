@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "_village_post")
+@EqualsAndHashCode(of = "villagePostId")
 public class VillagePostEntity {
 
     @Id

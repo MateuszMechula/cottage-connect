@@ -4,7 +4,7 @@ package pl.cottageconnect.security.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +20,7 @@ import static pl.cottageconnect.security.controller.AuthenticationController.BAS
 
 @RestController
 @RequestMapping(value = BASE_PATH)
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "auth", description = "Endpoints for user authentication")
 public class AuthenticationController {
     public static final String BASE_PATH = "/api/v1/auth";

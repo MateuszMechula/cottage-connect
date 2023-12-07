@@ -12,6 +12,7 @@ import pl.cottageconnect.security.entity.UserEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "_comment")
+@EqualsAndHashCode(of = "commentId")
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

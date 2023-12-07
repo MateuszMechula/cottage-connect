@@ -37,10 +37,10 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/hello").authenticated()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
                         .requestMatchers("/api/v1/users").authenticated()
+                        .requestMatchers("/api/v1/villages/**").hasAuthority("OWNER")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

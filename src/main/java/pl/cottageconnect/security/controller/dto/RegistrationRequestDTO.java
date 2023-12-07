@@ -20,4 +20,11 @@ public class RegistrationRequestDTO {
     private String password;
     @NotBlank
     private String role;
+    @NotBlank
+    private String firstname;
+    @NotBlank
+    private String lastname;
+    @NotBlank
+//    @Pattern(regexp = "^\\+(?:[0-9]●?){6,14}[0-9]$")
+    private String phone;
 }

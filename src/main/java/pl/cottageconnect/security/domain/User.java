@@ -1,21 +1,18 @@
 package pl.cottageconnect.security.domain;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
-import lombok.With;
-import pl.cottageconnect.security.entity.RoleEntity;
+import lombok.*;
 
 import java.util.Set;
 
 @With
 @Value
 @Builder
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "userId")
+@ToString(of = {"userId", "email", "password"})
 public class User {
-    Integer id;
+    Integer userId;
     String email;
     String password;
-    Set<RoleEntity> roles;
+    Set<Role> roles;
 
 }
