@@ -38,8 +38,8 @@ public class VillageService {
     public Village updateVillage(Long villageId, Village toUpdate) {
         log.info("Starts updating Village with ID: {}", villageId);
         Village existingVillage = getVillage(villageId);
-        Village newVillage = buildVillage(existingVillage, toUpdate);
-        return villageDAO.saveVillage(newVillage);
+        Village updatedVillage = updateVillage(existingVillage, toUpdate);
+        return villageDAO.saveVillage(updatedVillage);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class VillageService {
         villageDAO.deleteVillage(villageId);
     }
 
-    private Village buildVillage(Village existingVillage, Village toUpdate) {
+    private Village updateVillage(Village existingVillage, Village toUpdate) {
         return Village.builder()
                 .villageId(existingVillage.getVillageId())
                 .name(toUpdate.getName() != null ? toUpdate.getName() : existingVillage.getName())

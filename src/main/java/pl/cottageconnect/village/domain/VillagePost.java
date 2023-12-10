@@ -1,8 +1,7 @@
 package pl.cottageconnect.village.domain;
 
 import lombok.*;
-import pl.cottageconnect.security.entity.UserEntity;
-import pl.cottageconnect.village.entity.VillageEntity;
+import pl.cottageconnect.security.domain.User;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,6 @@ public class VillagePost {
     String title;
     String content;
     LocalDateTime createdAt;
-    UserEntity user;
-    VillageEntity village;
-
+    User user;
+    Village village;
 }

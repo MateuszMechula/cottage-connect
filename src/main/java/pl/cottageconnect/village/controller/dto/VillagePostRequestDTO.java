@@ -4,16 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.cottageconnect.address.controller.dto.AddressDTO;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VillageDTO {
+public class VillagePostRequestDTO {
 
-    private Long villageId;
-    private String name;
-    private String description;
-    private AddressDTO addressDTO;
+    String title;
+    String content;
 }

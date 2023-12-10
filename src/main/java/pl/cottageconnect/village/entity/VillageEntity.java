@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "_village")
 @EqualsAndHashCode(of = "villageId")
+@ToString(of = {"villageId", "name", "description"})
 public class VillageEntity {
 
     @Id

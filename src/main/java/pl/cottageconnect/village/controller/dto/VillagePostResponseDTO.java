@@ -4,16 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.cottageconnect.address.controller.dto.AddressDTO;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VillageDTO {
+public class VillagePostResponseDTO {
 
-    private Long villageId;
-    private String name;
-    private String description;
-    private AddressDTO addressDTO;
+    Long villagePostId;
+    String title;
+    String content;
+    LocalDateTime createdAt;
 }

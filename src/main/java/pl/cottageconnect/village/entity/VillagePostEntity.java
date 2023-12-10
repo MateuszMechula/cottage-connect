@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "_village_post")
 @EqualsAndHashCode(of = "villagePostId")
+@ToString(of = {"villagePostId", "title", "content", "createdAt"})
 public class VillagePostEntity {
 
     @Id
@@ -34,7 +35,7 @@ public class VillagePostEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "village_id")
     private VillageEntity village;
 

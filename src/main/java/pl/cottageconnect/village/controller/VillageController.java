@@ -20,7 +20,7 @@ import static pl.cottageconnect.village.controller.VillageController.BASE_PATH;
 @RequestMapping(value = BASE_PATH)
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "owner", description = "Endpoints for owner to manage their villages")
+@Tag(name = "manage villages", description = "Endpoints for <b>OWNER</b> to manage their villages")
 public class VillageController {
     public static final String BASE_PATH = "/api/v1/villages";
     public static final String VILLAGE_ID = "/{villageId}";

@@ -11,6 +11,10 @@ import pl.cottageconnect.village.domain.Village;
 public interface VillageMapper {
 
     @Mapping(source = "addressDTO", target = "address")
+    @Mapping(target = "villageId", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "cottages", ignore = true)
+    @Mapping(target = "posts", ignore = true)
     Village map(VillageDTO villageDTO);
 
     @Mapping(source = "address", target = "addressDTO")
