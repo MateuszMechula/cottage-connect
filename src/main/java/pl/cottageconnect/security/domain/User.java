@@ -14,5 +14,4 @@ public class User {
     String email;
     String password;
     Set<Role> roles;
-
 }

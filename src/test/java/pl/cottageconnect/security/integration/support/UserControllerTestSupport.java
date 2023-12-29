@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.support;
+package pl.cottageconnect.security.integration.support;
 
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;

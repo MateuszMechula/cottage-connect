@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.configuration;
+package pl.cottageconnect.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -9,7 +9,7 @@ import io.restassured.specification.RequestSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import pl.cottageconnect.integration.support.ControllerTestSupport;
+import pl.cottageconnect.security.integration.support.ControllerTestSupport;
 
 public abstract class RestAssuredIntegrationTestBase
         extends AbstractIntegrationTest

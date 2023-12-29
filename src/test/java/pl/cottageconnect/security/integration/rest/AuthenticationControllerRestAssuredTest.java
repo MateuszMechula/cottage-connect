@@ -1,11 +1,11 @@
-package pl.cottageconnect.integration.rest;
+package pl.cottageconnect.security.integration.rest;
 
 import org.junit.jupiter.api.Test;
-import pl.cottageconnect.integration.configuration.RestAssuredIntegrationTestBase;
-import pl.cottageconnect.integration.support.AuthenticationControllerTestSupport;
+import pl.cottageconnect.configuration.RestAssuredIntegrationTestBase;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
+import pl.cottageconnect.security.integration.support.AuthenticationControllerTestSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.cottageconnect.util.TestDataFactoryUser.testAuthenticationRequest;

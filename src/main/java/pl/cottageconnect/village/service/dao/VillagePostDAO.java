@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface VillagePostDAO {
 
-    VillagePost saveVillagePost(VillagePost toSave);
-
-    void deleteVillagePost(Long villageId);
+    Optional<VillagePost> findVillagePostById(Long villagePostId);
 
     List<VillagePost> findAllVillagePostsByVillageId(Long villageId);
 
-    Optional<VillagePost> findVillagePostById(Long villagePostId);
+    VillagePost saveVillagePost(VillagePost toSave);
+
+    void deleteVillagePost(Long villageId);
 }

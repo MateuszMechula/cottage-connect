@@ -41,6 +41,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
                         .requestMatchers("/api/v1/users").authenticated()
                         .requestMatchers("/api/v1/villages/**", "/api/v1/village-posts/**").hasAuthority("OWNER")
+                        .requestMatchers("/api/v1/cottages/**").hasAuthority("OWNER")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

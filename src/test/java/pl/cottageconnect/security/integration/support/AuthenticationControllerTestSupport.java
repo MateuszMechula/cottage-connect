@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.support;
+package pl.cottageconnect.security.integration.support;
 
 import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;

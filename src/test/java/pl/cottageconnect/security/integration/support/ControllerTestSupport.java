@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.support;
+package pl.cottageconnect.security.integration.support;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

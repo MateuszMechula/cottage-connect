@@ -20,14 +20,12 @@ import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 import pl.cottageconnect.security.domain.Role;
 import pl.cottageconnect.security.domain.User;
 import pl.cottageconnect.security.enums.RoleEnum;
-import pl.cottageconnect.security.exception.EmailAlreadyExistsException;
-import pl.cottageconnect.security.exception.InvalidPasswordException;
-import pl.cottageconnect.security.exception.InvalidRoleException;
-import pl.cottageconnect.security.exception.PasswordMismatchException;
+import pl.cottageconnect.security.exception.*;
 import pl.cottageconnect.security.service.dao.UserDAO;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -106,6 +104,14 @@ public class UserService {
         return userDAO.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException
                         ("User email: [%s] not found".formatted(email)));
+    }
+
+    public User getConnectedUser(Principal connectedUser) {
+        if (connectedUser == null) {
+            throw new MissingUserException("Connected user is null");
+        }
+        String email = Objects.requireNonNull(connectedUser.getName());
+        return getUserByUsername(email);
     }
 
     private void createRoleSpecificEntity(RegistrationRequestDTO request, Integer userId) {

@@ -12,6 +12,7 @@ import pl.cottageconnect.village.entity.VillageEntity;
 @Entity
 @Table(name = "_address")
 @EqualsAndHashCode(of = "addressId")
+@ToString(of = {"addressId", "street", "postalCode", "city", "voivodeship", "country"})
 public class AddressEntity {
 
     @Id

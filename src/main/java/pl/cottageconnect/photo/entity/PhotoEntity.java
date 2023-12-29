@@ -12,6 +12,7 @@ import pl.cottageconnect.photo.enums.PhotoableType;
 @Entity
 @Table(name = "_photo")
 @EqualsAndHashCode(of = "photoId")
+@ToString(of = {"photoId", "type", "photoableId"})
 public class PhotoEntity {
 
     @Id

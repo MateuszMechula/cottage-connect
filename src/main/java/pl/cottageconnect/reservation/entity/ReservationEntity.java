@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "_reservation")
 @EqualsAndHashCode(of = "reservationId")
+@ToString(of = {"reservationId", "dayIn", "dayOut", "status"})
 public class ReservationEntity {
 
     @Id

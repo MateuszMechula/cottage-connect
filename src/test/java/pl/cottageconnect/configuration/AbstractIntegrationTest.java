@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.configuration;
+package pl.cottageconnect.configuration;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;

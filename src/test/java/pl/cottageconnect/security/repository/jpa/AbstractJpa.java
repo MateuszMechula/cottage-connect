@@ -4,7 +4,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import pl.cottageconnect.integration.configuration.PersistenceContainerTestConfiguration;
+import pl.cottageconnect.configuration.PersistenceContainerTestConfiguration;
 
 @DataJpaTest
 @ActiveProfiles("test")

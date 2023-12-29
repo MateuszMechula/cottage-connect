@@ -1,4 +1,4 @@
-package pl.cottageconnect.integration.configuration;
+package pl.cottageconnect.configuration;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;

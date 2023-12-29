@@ -1,21 +1,24 @@
 package pl.cottageconnect.village.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cottageconnect.address.domain.Address;
+import pl.cottageconnect.common.exception.exceptions.NotFoundException;
 import pl.cottageconnect.owner.domain.Owner;
 import pl.cottageconnect.owner.service.OwnerService;
 import pl.cottageconnect.security.domain.User;
-import pl.cottageconnect.security.exception.MissingUserException;
 import pl.cottageconnect.security.service.UserService;
 import pl.cottageconnect.village.domain.Village;
-import pl.cottageconnect.village.exception.VillageNotFoundException;
 import pl.cottageconnect.village.service.dao.VillageDAO;
 
 import java.security.Principal;
-import java.util.Objects;
+import java.util.List;
+import java.util.Optional;
+
+import static pl.cottageconnect.village.service.VillagePostService.ErrorMessages.VILLAGE_POST_NOT_FOUND;
+import static pl.cottageconnect.village.service.VillageService.ErrorMessages.VILLAGE_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -26,18 +29,42 @@ public class VillageService {
     private final UserService userService;
     private final OwnerService ownerService;
 
-    public Village getVillage(Long villageId) {
+    @Transactional
+    public Village getVillage(Long villageId, Principal connectedUser) {
         log.info("Fetching Village by ID: {}", villageId);
-        assert villageId != null : "Village ID cannot be null";
-        return villageDAO.getVillage(villageId)
-                .orElseThrow(() ->
-                        new VillageNotFoundException("Village with id: [%s] doesn't exists".formatted(villageId)));
+
+        checkVillageId(villageId, connectedUser);
+
+        User user = userService.getConnectedUser(connectedUser);
+        Integer userId = user.getUserId();
+
+        Optional<Village> first = villageDAO.getVillage(villageId)
+                .stream()
+                .filter(village -> village.getOwner().getUserId().equals(userId))
+                .findFirst();
+
+        if (first.isEmpty()) {
+            throw new NotFoundException(VILLAGE_POST_NOT_FOUND.formatted(villageId));
+        }
+        return first.get();
     }
 
     @Transactional
-    public Village updateVillage(Long villageId, Village toUpdate) {
+    public List<Village> findAllVillage(Principal connectedUser) {
+
+        User user = userService.getConnectedUser(connectedUser);
+        Integer userId = user.getUserId();
+
+        Owner owner = ownerService.findOwnerByUserId(userId);
+        Long ownerId = owner.getOwnerId();
+        return villageDAO.findVillagesByUserId(ownerId);
+    }
+
+    @Transactional
+    public Village updateVillage(Long villageId, Village toUpdate, Principal principal) {
+
         log.info("Starts updating Village with ID: {}", villageId);
-        Village existingVillage = getVillage(villageId);
+        Village existingVillage = getVillage(villageId, principal);
         Village updatedVillage = updateVillage(existingVillage, toUpdate);
         return villageDAO.saveVillage(updatedVillage);
     }
@@ -45,13 +72,10 @@ public class VillageService {
     @Transactional
     public Village addVillage(Village village, Principal connectedUser) {
         log.info("Starts saving Village");
-        if (connectedUser == null) {
-            throw new MissingUserException("Connected user is null");
-        }
-        String email = Objects.requireNonNull(connectedUser.getName());
-        User existingUser = userService.getUserByUsername(email);
 
-        Owner owner = ownerService.findOwnerByUserId(existingUser.getUserId());
+        User user = userService.getConnectedUser(connectedUser);
+        Owner owner = ownerService.findOwnerByUserId(user.getUserId());
+
         Village toSave = village.withOwner(owner);
 
         return villageDAO.saveVillage(toSave);
@@ -60,7 +84,20 @@ public class VillageService {
     @Transactional
     public void deleteVillage(Long villageId) {
         log.info("Deleting Village by ID: {}", villageId);
+
         villageDAO.deleteVillage(villageId);
+    }
+
+    @Transactional
+    public void checkVillageId(Long villageId, Principal connectedUser) {
+        List<Village> allVillage = findAllVillage(connectedUser);
+
+        boolean villageFound = allVillage.stream()
+                .anyMatch(village -> village.getVillageId().equals(villageId));
+
+        if (!villageFound) {
+            throw new NotFoundException(VILLAGE_NOT_FOUND.formatted(villageId));
+        }
     }
 
     private Village updateVillage(Village existingVillage, Village toUpdate) {
@@ -86,5 +123,10 @@ public class VillageService {
                         : existingVillage.getVoivodeship())
                 .country(toUpdate.getCountry() != null ? toUpdate.getCountry() : existingVillage.getCountry())
                 .build();
+    }
+
+    static final class ErrorMessages {
+        static final String VILLAGE_NOT_FOUND =
+                "Village with ID: [%s] not found or user does not have access";
     }
 }

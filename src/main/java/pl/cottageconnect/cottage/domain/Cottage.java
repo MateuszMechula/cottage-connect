@@ -1,8 +1,8 @@
 package pl.cottageconnect.cottage.domain;
 
 import lombok.*;
-import pl.cottageconnect.reservation.entity.ReservationEntity;
-import pl.cottageconnect.village.entity.VillageEntity;
+import pl.cottageconnect.reservation.domain.Reservation;
+import pl.cottageconnect.village.domain.Village;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class Cottage {
     Integer cottageSize;
     BigDecimal price;
     String description;
-    VillageEntity village;
-    Set<ReservationEntity> reservations;
+    Village village;
+    Set<Reservation> reservations;
 
 }

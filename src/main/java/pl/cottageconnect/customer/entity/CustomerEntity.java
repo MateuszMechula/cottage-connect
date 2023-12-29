@@ -14,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "_customer")
 @EqualsAndHashCode(of = "customerId")
+@ToString(of = {"customerId", "firstname", "lastname", "phone", "userId"})
 public class CustomerEntity {
 
     @Id

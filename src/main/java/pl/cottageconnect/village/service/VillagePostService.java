@@ -1,21 +1,22 @@
 package pl.cottageconnect.village.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.cottageconnect.common.exception.exceptions.NotFoundException;
 import pl.cottageconnect.security.domain.User;
-import pl.cottageconnect.security.exception.MissingUserException;
 import pl.cottageconnect.security.service.UserService;
 import pl.cottageconnect.village.domain.Village;
 import pl.cottageconnect.village.domain.VillagePost;
-import pl.cottageconnect.village.exception.VillagePostNotFoundException;
 import pl.cottageconnect.village.service.dao.VillagePostDAO;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
+
+import static pl.cottageconnect.village.service.VillagePostService.ErrorMessages.VILLAGE_POST_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -25,19 +26,30 @@ public class VillagePostService {
     private final UserService userService;
     private final VillagePostDAO villagePostDAO;
 
-    public VillagePost findVillagePostById(Long villagePostId) {
-        return villagePostDAO.findVillagePostById(villagePostId)
-                .orElseThrow(() -> new VillagePostNotFoundException("VillagePost with ID: [%s] not found"
-                        .formatted(villagePostId)));
+    public VillagePost findVillagePostById(Long villagePostId, Principal connectedUser) {
+        User user = userService.getConnectedUser(connectedUser);
+        Integer userId = user.getUserId();
+
+        Optional<VillagePost> foundPost = villagePostDAO.findVillagePostById(villagePostId)
+                .stream()
+                .filter(villagePost -> villagePost.getUser().getUserId().equals(userId))
+                .findFirst();
+
+        if (foundPost.isEmpty()) {
+            throw new NotFoundException(VILLAGE_POST_NOT_FOUND.formatted(villagePostId));
+        }
+        return foundPost.get();
     }
 
-    public List<VillagePost> findAllVillagePosts(Long villageId) {
+
+    public List<VillagePost> findAllVillagePosts(Long villageId, Principal connectedUser) {
+        villageService.checkVillageId(villageId, connectedUser);
         return villagePostDAO.findAllVillagePostsByVillageId(villageId);
     }
 
     @Transactional
-    public VillagePost updateVillagePost(Long villagePostId, VillagePost toUpdate) {
-        VillagePost existingVillagePost = findVillagePostById(villagePostId);
+    public VillagePost updateVillagePost(Long villagePostId, VillagePost toUpdate, Principal connectedUser) {
+        VillagePost existingVillagePost = findVillagePostById(villagePostId, connectedUser);
         VillagePost updatedVillagePost = updateVillagePost(existingVillagePost, toUpdate);
         return villagePostDAO.saveVillagePost(updatedVillagePost);
     }
@@ -45,19 +57,17 @@ public class VillagePostService {
     @Transactional
     public VillagePost addVillagePost(Long villageId, Principal connectedUser, VillagePost villagePost) {
         log.info("Adding VillagePost to Village with ID: {}", villageId);
-        Village village = villageService.getVillage(villageId);
-        if (connectedUser == null) {
-            throw new MissingUserException("Connected user is null");
-        }
-        String email = Objects.requireNonNull(connectedUser.getName());
-        User user = userService.getUserByUsername(email);
+        User user = userService.getConnectedUser(connectedUser);
+        Village village = villageService.getVillage(villageId, connectedUser);
+
         VillagePost toSave = buildVillagePost(villagePost, user, village);
         return villagePostDAO.saveVillagePost(toSave);
     }
 
     @Transactional
-    public void deleteVillagePost(Long villageId) {
-        villagePostDAO.deleteVillagePost(villageId);
+    public void deleteVillagePost(Long villagePostId, Principal connectedUser) {
+        findVillagePostById(villagePostId, connectedUser);
+        villagePostDAO.deleteVillagePost(villagePostId);
     }
 
     private static VillagePost buildVillagePost(VillagePost villagePost, User user, Village village) {
@@ -80,4 +90,10 @@ public class VillagePostService {
                 .village(existing.getVillage())
                 .build();
     }
+
+    static final class ErrorMessages {
+        static final String VILLAGE_POST_NOT_FOUND =
+                "VillagePost with ID: [%s] not found or user does not have access";
+    }
+
 }

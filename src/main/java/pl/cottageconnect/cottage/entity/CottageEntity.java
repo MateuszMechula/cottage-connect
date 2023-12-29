@@ -16,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "_cottage")
 @EqualsAndHashCode(of = "cottageId")
+@ToString(of = {"cottageId", "cottageNumber", "cottageSize", "price", "description"})
 public class CottageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,6 +8,7 @@ import pl.cottageconnect.village.repository.jpa.VillageJpaRepository;
 import pl.cottageconnect.village.repository.mapper.VillageEntityMapper;
 import pl.cottageconnect.village.service.dao.VillageDAO;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,12 @@ public class VillageRepository implements VillageDAO {
     public Optional<Village> getVillage(Long villageId) {
         return villageJpaRepository.findById(villageId)
                 .map(villageEntityMapper::mapFromEntity);
+    }
+
+    @Override
+    public List<Village> findVillagesByUserId(Long ownerId) {
+        return villageJpaRepository.findVillageByOwnerId(ownerId).stream()
+                .map(villageEntityMapper::mapFromEntity).toList();
     }
 
     @Override
