@@ -2,7 +2,7 @@ package pl.cottageconnect.comment.domain;
 
 import lombok.*;
 import pl.cottageconnect.comment.enums.CommentableType;
-import pl.cottageconnect.security.entity.UserEntity;
+import pl.cottageconnect.security.domain.User;
 
 @With
 @Value
@@ -16,5 +16,5 @@ public class Comment {
     CommentableType type;
     Long commentableId;
     Integer rating;
-    UserEntity user;
+    User user;
 }
