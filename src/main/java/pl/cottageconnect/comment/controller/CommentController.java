@@ -20,14 +20,13 @@ import pl.cottageconnect.comment.service.CommentService;
 
 import java.security.Principal;
 
-import static pl.cottageconnect.comment.controller.CommentController.Routes.ADD_COMMENT_TO_ENTITY;
-import static pl.cottageconnect.comment.controller.CommentController.Routes.GET_ALL_COMMENTS_BY_ENTITY_ID;
+import static pl.cottageconnect.comment.controller.CommentController.Routes.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage comments", description = "Endpoints responsible for comments")
+@Tag(name = "manage comments", description = "Endpoints responsible for comments (<b>OWNER</b>, <b>CUSTOMER</b>)")
 public class CommentController {
 
     private final CommentService commentService;
@@ -68,11 +67,41 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);
     }
 
+    @Operation(
+            summary = "Update comment by ID",
+            description = "Update comment with the provided information"
+    )
+    @PatchMapping(value = UPDATE_COMMENT_BY_ID)
+    public ResponseEntity<CommentResponseDTO> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDTO commentRequestDTO,
+            Principal connectedUser
+    ) {
+        Comment commentToUpdate = commentRequestMapper.map(commentRequestDTO);
+        Comment updatedComment = commentService.updateComment(commentId, commentToUpdate, connectedUser);
+        CommentResponseDTO commentResponseDTO = commentResponseMapper.mapToDTO(updatedComment);
+
+        return ResponseEntity.ok(commentResponseDTO);
+    }
+
+    @Operation(
+            summary = "Delete comment by ID",
+            description = "Delete comment based on its unique ID"
+    )
+    @DeleteMapping(value = DELETE_COMMENT_BY_ID)
+    public ResponseEntity<Void> deleteCommentById(@PathVariable Long commentId, Principal connectedUser) {
+        commentService.deleteCommentById(commentId, connectedUser);
+
+        return ResponseEntity.noContent().build();
+    }
+
     static final class Routes {
         static final String ROOT = "/api/v1";
         static final String ENTITIES = "/entities";
         static final String COMMENTS = "/comments";
         static final String ADD_COMMENT_TO_ENTITY = ROOT + ENTITIES + "/{entityId}" + COMMENTS;
+        static final String UPDATE_COMMENT_BY_ID = ROOT + COMMENTS + "/{commentId}";
+        static final String DELETE_COMMENT_BY_ID = ROOT + COMMENTS + "/{commentId}";
         static final String GET_ALL_COMMENTS_BY_ENTITY_ID = ROOT + ENTITIES + "/{entityId}" + COMMENTS;
     }
 }

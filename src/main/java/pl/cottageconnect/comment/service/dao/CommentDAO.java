@@ -4,8 +4,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pl.cottageconnect.comment.domain.Comment;
 
+import java.util.Optional;
+
 public interface CommentDAO {
-    Comment addComment(Comment newComment);
+    Optional<Comment> findCommentById(Long commentId);
 
     Page<Comment> getCommentsByEntityId(Long villageId, Pageable pageable);
+
+    Comment addComment(Comment newComment);
+
+    void deleteCommentById(Long commentId);
 }
