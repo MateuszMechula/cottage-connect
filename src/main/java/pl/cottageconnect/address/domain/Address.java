@@ -1,7 +1,7 @@
 package pl.cottageconnect.address.domain;
 
 import lombok.*;
-import pl.cottageconnect.village.entity.VillageEntity;
+import pl.cottageconnect.village.domain.Village;
 
 @With
 @Value
@@ -16,5 +16,5 @@ public class Address {
     String city;
     String voivodeship;
     String country;
-    VillageEntity village;
+    Village village;
 }

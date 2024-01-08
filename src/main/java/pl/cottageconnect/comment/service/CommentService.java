@@ -28,53 +28,47 @@ public class CommentService {
     private final CottageService cottageService;
 
     @Transactional
-    public Comment getCommentById(Long commentId) {
-        return commentDAO.findCommentById(commentId)
+    public Comment getCommentById(Long commentId, Principal connectedUser) {
+        Comment comment = commentDAO.findCommentById(commentId)
                 .orElseThrow(() -> new NotFoundException(COMMENT_NOT_FOUND.formatted(commentId)));
+
+        validateUser(comment.getUser(), connectedUser, commentId);
+
+        return comment;
     }
 
     @Transactional
-    public Page<Comment> getCommentsByEntityId(Long entityId, CommentableType type, Principal connectedUser, Pageable pageable) {
-        validateEntity(entityId, type, connectedUser);
+    public Page<Comment> getCommentsByCommentableId(Long commentableId, CommentableType type, Principal connectedUser,
+                                                    Pageable pageable) {
+        validateCommentable(commentableId, type, connectedUser);
 
-        return commentDAO.getCommentsByEntityId(entityId, pageable);
+        return commentDAO.getCommentsByCommentableId(commentableId, pageable);
     }
 
     @Transactional
-    public Comment addCommentToEntity(Long entityId, CommentableType type, Comment comment, Principal connectedUser) {
-        validateEntity(entityId, type, connectedUser);
+    public Comment addCommentToCommentable(Long commentableId, CommentableType type, Comment comment,
+                                           Principal connectedUser) {
 
+        validateCommentable(commentableId, type, connectedUser);
         User user = userService.getConnectedUser(connectedUser);
-        Comment newComment = createComment(entityId, comment, user, type);
+        Comment newComment = createComment(commentableId, comment, user, type);
 
         return commentDAO.addComment(newComment);
     }
 
     @Transactional
     public Comment updateComment(Long commentId, Comment commentToUpdate, Principal connectedUser) {
-        Comment existingComment = getCommentById(commentId);
 
-        Integer expectedUserId = userService.getConnectedUser(connectedUser).getUserId();
-        Integer userId = existingComment.getUser().getUserId();
-
-        if (expectedUserId.equals(userId)) {
-            Comment updatedComment = getUpdatedComment(commentId, commentToUpdate, existingComment);
-            return commentDAO.addComment(updatedComment);
-        } else {
-            throw new NotFoundException(COMMENT_NOT_FOUND.formatted(commentId));
-        }
+        Comment existingComment = getCommentById(commentId, connectedUser);
+        Comment updatedComment = getUpdatedComment(commentId, commentToUpdate, existingComment);
+        return commentDAO.addComment(updatedComment);
     }
 
     @Transactional
     public void deleteCommentById(Long commentId, Principal connectedUser) {
-        Comment existingComment = getCommentById(commentId);
-        Integer expectedUserId = userService.getConnectedUser(connectedUser).getUserId();
-        Integer userId = existingComment.getUser().getUserId();
-        if (expectedUserId.equals(userId)) {
-            commentDAO.deleteCommentById(commentId);
-        } else {
-            throw new NotFoundException(COMMENT_NOT_FOUND.formatted(commentId));
-        }
+        getCommentById(commentId, connectedUser);
+
+        commentDAO.deleteCommentById(commentId);
     }
 
     private Comment getUpdatedComment(Long commentId, Comment commentToUpdate, Comment existingComment) {
@@ -88,13 +82,20 @@ public class CommentService {
                 .build();
     }
 
-    private void validateEntity(Long entityId, CommentableType type, Principal connectedUser) {
-        if (CommentableType.VILLAGE.equals(type)) {
-            villageService.getVillage(entityId, connectedUser);
-        } else if (CommentableType.COTTAGE.equals(type)) {
-            cottageService.getCottage(entityId, connectedUser);
-        } else {
-            throw new IllegalArgumentException(UNSUPPORTED_COMMENTABLE_TYPE.formatted(type));
+    private void validateCommentable(Long entityId, CommentableType type, Principal connectedUser) {
+        switch (type) {
+            case VILLAGE -> villageService.getVillage(entityId, connectedUser);
+            case COTTAGE -> cottageService.getCottage(entityId, connectedUser);
+            default -> throw new IllegalArgumentException(UNSUPPORTED_COMMENTABLE_TYPE.formatted(type));
+        }
+    }
+
+    private void validateUser(User commentUser, Principal connectedUser, Long commentId) {
+        Integer expectedUserId = userService.getConnectedUser(connectedUser).getUserId();
+        Integer userId = commentUser.getUserId();
+
+        if (!expectedUserId.equals(userId)) {
+            throw new NotFoundException(COMMENT_NOT_FOUND.formatted(commentId));
         }
     }
 
@@ -107,7 +108,6 @@ public class CommentService {
                 .user(user)
                 .build();
     }
-
 
     static final class ErrorMessages {
         static final String COMMENT_NOT_FOUND = "Comment with ID: [%s] not found or you don't have access";

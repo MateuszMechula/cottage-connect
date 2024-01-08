@@ -25,8 +25,8 @@ public class CommentRepository implements CommentDAO {
     }
 
     @Override
-    public Page<Comment> getCommentsByEntityId(Long entityId, Pageable pageable) {
-        return commentJpaRepository.getCommentsByEntityId(entityId, pageable)
+    public Page<Comment> getCommentsByCommentableId(Long commentableId, Pageable pageable) {
+        return commentJpaRepository.getCommentsByCommentableId(commentableId, pageable)
                 .map(commentEntityMapper::mapFromEntity);
     }
 

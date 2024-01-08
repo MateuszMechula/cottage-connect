@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CommentDAO {
     Optional<Comment> findCommentById(Long commentId);
 
-    Page<Comment> getCommentsByEntityId(Long villageId, Pageable pageable);
+    Page<Comment> getCommentsByCommentableId(Long villageId, Pageable pageable);
 
     Comment addComment(Comment newComment);
 

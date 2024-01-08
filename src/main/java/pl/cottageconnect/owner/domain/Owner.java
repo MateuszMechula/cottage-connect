@@ -1,7 +1,7 @@
 package pl.cottageconnect.owner.domain;
 
 import lombok.*;
-import pl.cottageconnect.village.entity.VillageEntity;
+import pl.cottageconnect.village.domain.Village;
 
 import java.util.Set;
 
@@ -17,5 +17,5 @@ public class Owner {
     String lastname;
     String phone;
     Integer userId;
-    Set<VillageEntity> village;
+    Set<Village> village;
 }

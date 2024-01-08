@@ -11,6 +11,6 @@ import pl.cottageconnect.comment.entity.CommentEntity;
 @Repository
 public interface CommentJpaRepository extends JpaRepository<CommentEntity, Long> {
 
-    @Query("SELECT v FROM CommentEntity v where v.commentableId = :entityId")
-    Page<CommentEntity> getCommentsByEntityId(@Param("entityId") Long entityId, Pageable pageable);
+    @Query("SELECT v FROM CommentEntity v where v.commentableId = :commentableId")
+    Page<CommentEntity> getCommentsByCommentableId(@Param("commentableId") Long commentableId, Pageable pageable);
 }

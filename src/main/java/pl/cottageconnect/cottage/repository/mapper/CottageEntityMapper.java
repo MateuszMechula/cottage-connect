@@ -14,6 +14,8 @@ public interface CottageEntityMapper {
 
     @Mapping(target = "village.cottages", ignore = true)
     @Mapping(target = "village.posts", ignore = true)
+    @Mapping(target = "village.owner.village", ignore = true)
+    @Mapping(target = "village.address.village", ignore = true)
     Cottage mapFromEntity(CottageEntity cottage);
 
 }

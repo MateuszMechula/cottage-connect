@@ -42,7 +42,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/users").authenticated()
                         .requestMatchers("/api/v1/villages/**", "/api/v1/village-posts/**").hasAuthority("OWNER")
                         .requestMatchers("/api/v1/cottages/**").hasAuthority("OWNER")
-                        .requestMatchers("/api/v1/entities/{entityId}/comments", "/api/v1/comments/**")
+                        .requestMatchers("/api/v1/commentables/{commentableId}/comments", "/api/v1/comments/**")
+                        .hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/likes/**")
                         .hasAnyAuthority("OWNER", "CUSTOMER")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement

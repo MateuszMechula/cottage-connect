@@ -1,4 +1,4 @@
-package pl.cottageconnect.comment.controller.mapper;
+package pl.cottageconnect.comment.controller.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
