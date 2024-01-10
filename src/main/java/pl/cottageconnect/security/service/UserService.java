@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.cottageconnect.common.exception.exceptions.NotFoundException;
 import pl.cottageconnect.customer.domain.Customer;
 import pl.cottageconnect.customer.service.dao.CustomerDAO;
 import pl.cottageconnect.owner.domain.Owner;
@@ -29,6 +30,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static pl.cottageconnect.security.service.UserService.ErrorMessages.*;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -41,6 +44,16 @@ public class UserService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+
+    @Transactional
+    public User getUser(Integer userId, Principal connectedUser) {
+        User user = userDAO.getUserByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.formatted(userId)));
+
+        checkUserIdCompatibility(user.getUserId(), connectedUser);
+
+        return user;
+    }
 
     @Transactional
     public AuthenticationResponseDTO register(RegistrationRequestDTO request) {
@@ -100,10 +113,17 @@ public class UserService {
         userDAO.save(toSave);
     }
 
+    public void checkUserIdCompatibility(Integer userId, Principal connectedUser) {
+        Integer expectedUserId = getConnectedUser(connectedUser).getUserId();
+        if (!expectedUserId.equals(userId)) {
+            throw new UserIdMismatchException(USER_ID_MISMATCH);
+        }
+    }
+
     public User getUserByUsername(String email) {
         return userDAO.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException
-                        ("User email: [%s] not found".formatted(email)));
+                        (USER_EMAIL_NOT_FOUND.formatted(email)));
     }
 
     public User getConnectedUser(Principal connectedUser) {
@@ -123,8 +143,7 @@ public class UserService {
             Customer customer = buildCustomer(request, userId);
             customerDAO.save(customer.withUserId(userId));
         } else {
-            throw new InvalidRoleException(
-                    "Invalid role name: [%s]".formatted(request.getRole()));
+            throw new InvalidRoleException(INVALID_ROLE_NAME.formatted(request.getRole()));
         }
     }
 
@@ -133,8 +152,7 @@ public class UserService {
 
         if (existingUser.isPresent()) {
             throw new EmailAlreadyExistsException
-                    ("Email address: [%s] already exists. Please use a different email."
-                            .formatted(request.getEmail()));
+                    (EMAIL_ALREADY_EXISTS.formatted(request.getEmail()));
         }
     }
 
@@ -177,5 +195,13 @@ public class UserService {
                     .build());
         }
         return Collections.emptySet();
+    }
+
+    static final class ErrorMessages {
+        static final String USER_NOT_FOUND = "User with ID: [%s] not found or you dont have access";
+        static final String USER_ID_MISMATCH = "User ID Mismatch - The provided user IDs do not match.";
+        static final String USER_EMAIL_NOT_FOUND = "User email: [%s] not found";
+        static final String EMAIL_ALREADY_EXISTS = "Email address: [%s] already exists. Please use a different email.";
+        static final String INVALID_ROLE_NAME = "Invalid role name: [%s]";
     }
 }

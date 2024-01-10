@@ -35,8 +35,8 @@ public class CommentController {
 
 
     @Operation(
-            summary = "Get all comments by entity Id",
-            description = "Retrieve all comments associated with the given entity Id."
+            summary = "Get all comments by commentable Id (VILLAGE,COTTAGE)",
+            description = "Retrieve all comments associated with the given commentable Id."
     )
     @GetMapping(value = GET_ALL_COMMENTS_BY_COMMENTABLE_ID)
     public ResponseEntity<Page<CommentResponseDTO>> getAllComments(@PathVariable Long commentableId,
@@ -50,7 +50,7 @@ public class CommentController {
     }
 
     @Operation(
-            summary = "Add a new comment",
+            summary = "Add a new comment to commentable (VILLAGE,COTTAGE)",
             description = "Create a new comment with the provided information."
     )
     @PostMapping(value = ADD_COMMENT)

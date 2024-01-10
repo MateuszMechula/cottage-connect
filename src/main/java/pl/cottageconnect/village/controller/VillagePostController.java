@@ -62,8 +62,8 @@ public class VillagePostController {
     }
 
     @Operation(
-            summary = "Update village post by ID",
-            description = "Update information about a village post based on its unique ID."
+            summary = "Update Village Post by ID",
+            description = "Update information about a Village Post based on its unique ID."
     )
     @PatchMapping(value = UPDATE)
     public ResponseEntity<VillagePostResponseDTO> updateVillagePost(
@@ -110,8 +110,9 @@ public class VillagePostController {
 
     static final class Routes {
         static final String ROOT = "/api/v1/village-posts";
-        static final String SAVE = ROOT + "/villages/{villageId}";
-        static final String FIND_ALL_BY_VILLAGE_ID = ROOT + "/village/{villageId}";
+        static final String ROOT_BY_VILLAGE = "/api/v1/villages/{villageId}/village-posts";
+        static final String SAVE = ROOT_BY_VILLAGE;
+        static final String FIND_ALL_BY_VILLAGE_ID = ROOT_BY_VILLAGE;
         static final String UPDATE = ROOT + "/{villagePostId}";
         static final String FIND_VILLAGE_POST_BY_ID = ROOT + "/{villagePostId}";
         static final String DELETE_BY_ID = ROOT + "/{villagePostId}";

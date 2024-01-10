@@ -13,4 +13,5 @@ public class Photo {
     Long photoId;
     PhotoableType type;
     Long photoableId;
+    String path;
 }

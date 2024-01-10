@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                         .hasAnyAuthority("OWNER", "CUSTOMER")
                         .requestMatchers("/api/v1/likes/**")
                         .hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/photos/**")
+                        .hasAnyAuthority("OWNER", "CUSTOMER")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

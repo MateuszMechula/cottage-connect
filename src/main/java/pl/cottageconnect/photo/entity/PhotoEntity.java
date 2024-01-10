@@ -25,4 +25,7 @@ public class PhotoEntity {
 
     @Column(name = "photoable_id")
     private Long photoableId;
+
+    @Column(name = "path")
+    private String path;
 }
