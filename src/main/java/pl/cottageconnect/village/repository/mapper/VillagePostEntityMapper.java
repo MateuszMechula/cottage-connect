@@ -9,6 +9,9 @@ import pl.cottageconnect.village.entity.VillagePostEntity;
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface VillagePostEntityMapper {
 
+    @Mapping(target = "user.likes", ignore = true)
+    @Mapping(target = "user.posts", ignore = true)
+    @Mapping(target = "user.comments", ignore = true)
     VillagePostEntity mapToEntity(VillagePost village);
 
     @Mapping(target = "village.owner", ignore = true)

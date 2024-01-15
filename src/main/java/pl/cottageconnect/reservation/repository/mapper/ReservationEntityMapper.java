@@ -5,8 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import pl.cottageconnect.reservation.domain.Reservation;
 import pl.cottageconnect.reservation.entity.ReservationEntity;
+import pl.cottageconnect.security.repository.mapper.UserEntityMapper;
 
-@Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = {UserEntityMapper.class}, unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface ReservationEntityMapper {
 
     ReservationEntity mapToEntity(Reservation reservation);
