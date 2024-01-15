@@ -44,10 +44,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/cottages/**").hasAuthority("OWNER")
                         .requestMatchers("/api/v1/commentables/{commentableId}/comments", "/api/v1/comments/**")
                         .hasAnyAuthority("OWNER", "CUSTOMER")
-                        .requestMatchers("/api/v1/likes/**")
-                        .hasAnyAuthority("OWNER", "CUSTOMER")
-                        .requestMatchers("/api/v1/photos/**")
-                        .hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/likes/**").hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/photos/**").hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/reservations/**").hasAnyAuthority("OWNER", "CUSTOMER")
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

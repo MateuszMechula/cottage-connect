@@ -85,7 +85,7 @@ public class CommentService {
     private void validateCommentable(Long entityId, CommentableType type, Principal connectedUser) {
         switch (type) {
             case VILLAGE -> villageService.getVillage(entityId, connectedUser);
-            case COTTAGE -> cottageService.getCottage(entityId, connectedUser);
+            case COTTAGE -> cottageService.getCottageWithCheck(entityId, connectedUser);
             default -> throw new IllegalArgumentException(UNSUPPORTED_COMMENTABLE_TYPE.formatted(type));
         }
     }

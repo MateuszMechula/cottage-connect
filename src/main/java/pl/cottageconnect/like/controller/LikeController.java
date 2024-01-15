@@ -23,14 +23,14 @@ import static pl.cottageconnect.like.controller.LikeController.Routes.DELETE_LIK
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage likes", description = "Endpoints responsible for likes (<b>OWNER</b>, <b>CUSTOMER</b>)")
+@Tag(name = "likes", description = "Endpoints responsible for likes (<b>OWNER</b>, <b>CUSTOMER</b>)")
 public class LikeController {
 
     private final LikeService likeService;
     private final LikeMapper likeMapper;
 
     @Operation(
-            summary = "Add like to COMMENT or VILLAGE POST by ID",
+            summary = "Add like for types: COMMENT, VILLAGE POST by ID",
             description = "You can add like to COMMENT or VILLAGE POST by ID (likeableId = commentId or villagePostId)"
     )
     @PostMapping(value = ADD_LIKE)

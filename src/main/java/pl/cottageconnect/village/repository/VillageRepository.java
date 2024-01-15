@@ -31,6 +31,12 @@ public class VillageRepository implements VillageDAO {
     }
 
     @Override
+    public Optional<Village> findVillageByVillageIdAndUserId(Long villageId, Integer userId) {
+        return villageJpaRepository.findVillageByVillageIdAndUserId(villageId, userId)
+                .map(villageEntityMapper::mapFromEntity);
+    }
+
+    @Override
     public Village saveVillage(Village village) {
         VillageEntity toSave = villageEntityMapper.mapToEntity(village);
         VillageEntity saved = villageJpaRepository.save(toSave);

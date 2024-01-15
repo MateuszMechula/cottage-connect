@@ -2,8 +2,10 @@ package pl.cottageconnect.owner.service.dao;
 
 import pl.cottageconnect.owner.domain.Owner;
 
-public interface OwnerDAO {
-    Owner save(Owner owner);
+import java.util.Optional;
 
-    Owner findOwnerByUserId(Integer userId);
+public interface OwnerDAO {
+    Optional<Owner> findOwnerByUserId(Integer userId);
+
+    Owner save(Owner owner);
 }

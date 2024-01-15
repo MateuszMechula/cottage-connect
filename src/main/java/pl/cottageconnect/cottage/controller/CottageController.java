@@ -24,7 +24,7 @@ import static pl.cottageconnect.cottage.controller.CottageController.Routes.*;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage cottages", description = "Endpoints for <b>OWNER</b> to manage their cottages")
+@Tag(name = "cottages", description = "Endpoints for <b>OWNER</b> to manage their cottages")
 public class CottageController {
 
     private final CottageMapper cottageMapper;
@@ -37,13 +37,13 @@ public class CottageController {
     @GetMapping(value = FIND_COTTAGE_BY_ID)
     public ResponseEntity<CottageDTO> getCottage(@PathVariable Long cottageId, Principal connectedUser) {
 
-        Cottage cottage = cottageService.getCottage(cottageId, connectedUser);
+        Cottage cottage = cottageService.getCottageWithCheck(cottageId, connectedUser);
         CottageDTO cottageDTO = cottageMapper.mapToDTO(cottage);
         return ResponseEntity.status(HttpStatus.OK).body(cottageDTO);
     }
 
     @Operation(
-            summary = "Find All Cottages",
+            summary = "Find All Cottages for Village by ID",
             description = "Retrieve information about all cottages by village ID"
     )
     @GetMapping(value = FIND_COTTAGES_BY_VILLAGE_ID)

@@ -5,7 +5,7 @@ import lombok.*;
 import pl.cottageconnect.cottage.entity.CottageEntity;
 import pl.cottageconnect.customer.entity.CustomerEntity;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -24,10 +24,10 @@ public class ReservationEntity {
     private Long reservationId;
 
     @Column(name = "day_in")
-    private LocalDateTime dayIn;
+    private OffsetDateTime dayIn;
 
     @Column(name = "day_out")
-    private LocalDateTime dayOut;
+    private OffsetDateTime dayOut;
 
     @Column(name = "status")
     private Boolean status;

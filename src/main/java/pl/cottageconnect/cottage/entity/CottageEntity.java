@@ -41,5 +41,4 @@ public class CottageEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cottage", cascade = CascadeType.ALL)
     private Set<ReservationEntity> reservations;
-
 }

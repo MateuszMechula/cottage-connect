@@ -7,6 +7,8 @@ import pl.cottageconnect.common.exception.exceptions.NotFoundException;
 import pl.cottageconnect.common.exception.exceptions.UnauthorizedAccessException;
 import pl.cottageconnect.cottage.domain.Cottage;
 import pl.cottageconnect.cottage.service.dao.CottageDAO;
+import pl.cottageconnect.customer.service.CustomerService;
+import pl.cottageconnect.security.domain.User;
 import pl.cottageconnect.security.service.UserService;
 import pl.cottageconnect.village.domain.Village;
 import pl.cottageconnect.village.service.VillageService;
@@ -23,9 +25,10 @@ public class CottageService {
     private final CottageDAO cottageDAO;
     private final VillageService villageService;
     private final UserService userService;
+    private final CustomerService customerService;
 
     @Transactional
-    public Cottage getCottage(Long cottageId, Principal connectedUser) {
+    public Cottage getCottageWithCheck(Long cottageId, Principal connectedUser) {
 
         Cottage cottage = cottageDAO.getCottage(cottageId)
                 .orElseThrow(() -> new NotFoundException(COTTAGE_NOT_FOUND.formatted(cottageId)));
@@ -44,7 +47,7 @@ public class CottageService {
     @Transactional
     public Cottage updateCottage(Long cottageId, Cottage toUpdate, Principal connectedUser) {
 
-        Cottage existingCottage = getCottage(cottageId, connectedUser);
+        Cottage existingCottage = getCottageWithCheck(cottageId, connectedUser);
         Cottage updatedCottage = updateCottage(toUpdate, existingCottage);
 
         return cottageDAO.addCottage(updatedCottage);
@@ -59,7 +62,7 @@ public class CottageService {
 
     @Transactional
     public void deleteCottage(Long cottageId, Principal connectedUser) {
-        getCottage(cottageId, connectedUser);
+        getCottageWithCheck(cottageId, connectedUser);
 
         cottageDAO.deleteCottage(cottageId);
 
@@ -83,13 +86,22 @@ public class CottageService {
     }
 
     private void checkAccessRights(Cottage cottage, Principal connectedUser) {
-        Integer userId = cottage.getVillage().getOwner().getUserId();
-        Integer expectedUserId = userService.getConnectedUser(connectedUser).getUserId();
-        String username = connectedUser.getName();
+        User connUser = userService.getConnectedUser(connectedUser);
 
-        if (!expectedUserId.equals(userId)) {
-            throw new UnauthorizedAccessException(COTTAGE_DELETE_ACCESS_DENIED.formatted(username));
+        if (!isOwnerOrCustomer(cottage, connUser)) {
+            throw new UnauthorizedAccessException(COTTAGE_DELETE_ACCESS_DENIED.formatted(connUser.getEmail()));
         }
+    }
+
+    private boolean isOwnerOrCustomer(Cottage cottage, User connectedUser) {
+        Integer userId = connectedUser.getUserId();
+        Integer ownerUserId = cottage.getVillage().getOwner().getUserId();
+
+        return userId.equals(ownerUserId) || isCustomer(userId);
+    }
+
+    private boolean isCustomer(Integer userId) {
+        return customerService.findCustomerByUserId(userId) != null;
     }
 
     static final class ErrorMessages {

@@ -63,7 +63,7 @@ public class PhotoService {
     private void validatePhotoable(Long photoableId, PhotoableType type, Principal connectedUser) {
         switch (type) {
             case USER -> userService.getUser(Math.toIntExact(photoableId), connectedUser);
-            case COTTAGE -> cottageService.getCottage(photoableId, connectedUser);
+            case COTTAGE -> cottageService.getCottageWithCheck(photoableId, connectedUser);
             default -> throw new IllegalArgumentException(UNSUPPORTED_PHOTOABLE_TYPE.formatted(photoableId));
         }
     }

@@ -24,7 +24,7 @@ import static pl.cottageconnect.village.controller.VillagePostController.Routes.
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage village posts", description = "Endpoints for <b>OWNER</b> to manage their villages posts")
+@Tag(name = "village posts", description = "Endpoints for <b>OWNER</b> to manage their villages posts")
 public class VillagePostController {
 
     private final VillagePostService villagePostService;

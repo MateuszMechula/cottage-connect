@@ -26,7 +26,7 @@ import static pl.cottageconnect.comment.controller.CommentController.Routes.*;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage comments", description = "Endpoints responsible for comments (<b>OWNER</b>, <b>CUSTOMER</b>)")
+@Tag(name = "comments", description = "Endpoints responsible for comments (<b>OWNER</b>, <b>CUSTOMER</b>)")
 public class CommentController {
 
     private final CommentService commentService;
@@ -39,9 +39,9 @@ public class CommentController {
             description = "Retrieve all comments associated with the given commentable Id."
     )
     @GetMapping(value = GET_ALL_COMMENTS_BY_COMMENTABLE_ID)
-    public ResponseEntity<Page<CommentResponseDTO>> getAllComments(@PathVariable Long commentableId,
+    public ResponseEntity<Page<CommentResponseDTO>> getAllComments(@RequestParam(name = "commentableId") Long commentableId,
+                                                                   @RequestParam(name = "type") CommentableType type,
                                                                    Principal connectedUser,
-                                                                   CommentableType type,
                                                                    Pageable pageable) {
 
         Page<CommentResponseDTO> listOfComments = commentService.getCommentsByCommentableId(commentableId, type,
@@ -55,10 +55,10 @@ public class CommentController {
     )
     @PostMapping(value = ADD_COMMENT)
     public ResponseEntity<CommentResponseDTO> addComment(
-            @PathVariable Long commentableId,
+            @RequestParam("commentableId") Long commentableId,
+            @RequestParam("type") CommentableType type,
             @RequestBody CommentRequestDTO commentRequestDTO,
-            Principal connectedUser,
-            CommentableType type) {
+            Principal connectedUser) {
 
         Comment commentToSave = commentRequestMapper.map(commentRequestDTO);
         Comment savedComment = commentService.addCommentToCommentable(commentableId, type, commentToSave, connectedUser);
@@ -96,12 +96,10 @@ public class CommentController {
     }
 
     static final class Routes {
-        static final String ROOT = "/api/v1";
-        static final String COMMENTABLES = "/commentables";
-        static final String COMMENTS = "/comments";
-        static final String ADD_COMMENT = ROOT + COMMENTABLES + "/{commentableId}" + COMMENTS;
-        static final String UPDATE_COMMENT_BY_ID = ROOT + COMMENTS + "/{commentId}";
-        static final String DELETE_COMMENT_BY_ID = ROOT + COMMENTS + "/{commentId}";
-        static final String GET_ALL_COMMENTS_BY_COMMENTABLE_ID = ROOT + COMMENTABLES + "/{commentableId}" + COMMENTS;
+        static final String ROOT = "/api/v1/comments";
+        static final String ADD_COMMENT = ROOT;
+        static final String UPDATE_COMMENT_BY_ID = ROOT + "/{commentId}";
+        static final String DELETE_COMMENT_BY_ID = ROOT + "/{commentId}";
+        static final String GET_ALL_COMMENTS_BY_COMMENTABLE_ID = ROOT;
     }
 }

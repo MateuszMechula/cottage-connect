@@ -8,6 +8,8 @@ import pl.cottageconnect.owner.repository.jpa.OwnerJpaRepository;
 import pl.cottageconnect.owner.repository.mapper.OwnerEntityMapper;
 import pl.cottageconnect.owner.service.dao.OwnerDAO;
 
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class OwnerRepository implements OwnerDAO {
@@ -22,8 +24,9 @@ public class OwnerRepository implements OwnerDAO {
     }
 
     @Override
-    public Owner findOwnerByUserId(Integer userId) {
-        OwnerEntity owner = ownerJpaRepository.findOwnerEntityByUserId(userId);
-        return ownerEntityMapper.mapFromEntity(owner);
+    public Optional<Owner> findOwnerByUserId(Integer userId) {
+        return ownerJpaRepository.findOwnerByUserId(userId)
+                .map(ownerEntityMapper::mapFromEntity);
+
     }
 }

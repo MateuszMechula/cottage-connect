@@ -1,10 +1,10 @@
 package pl.cottageconnect.reservation.domain;
 
 import lombok.*;
-import pl.cottageconnect.cottage.entity.CottageEntity;
-import pl.cottageconnect.customer.entity.CustomerEntity;
+import pl.cottageconnect.cottage.domain.Cottage;
+import pl.cottageconnect.customer.domain.Customer;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @With
 @Value
@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 public class Reservation {
 
     Long reservationId;
-    LocalDateTime dayIn;
-    LocalDateTime dayOut;
+    OffsetDateTime dayIn;
+    OffsetDateTime dayOut;
     Boolean status;
-    CustomerEntity customer;
-    CottageEntity cottage;
+    Customer customer;
+    Cottage cottage;
 }

@@ -19,14 +19,15 @@ import static pl.cottageconnect.photo.controller.PhotoController.Routes.DELETE_P
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage photos", description = "Endpoints responsible for photos (<b>OWNER</b>, <b>CUSTOMER</b>)")
+@Tag(name = "photos", description = "Endpoints responsible for photos (<b>OWNER</b>, <b>CUSTOMER</b>). You can add photo " +
+        "for types: USER, COTTAGE")
 public class PhotoController {
 
     private final PhotoService photoService;
 
     @Operation(
             summary = "Add Photo",
-            description = "Endpoint to add a new photo for COTTAGE or USER")
+            description = "Endpoint to add a new photo for COTTAGE, USER")
     @PostMapping(value = ADD_PHOTO)
     public ResponseEntity<Void> addPhoto(@PathVariable Long photoableId,
                                          @RequestParam("type") PhotoableType type,

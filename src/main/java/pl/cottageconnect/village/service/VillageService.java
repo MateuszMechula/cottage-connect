@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static pl.cottageconnect.village.service.VillagePostService.ErrorMessages.VILLAGE_POST_NOT_FOUND;
 import static pl.cottageconnect.village.service.VillageService.ErrorMessages.VILLAGE_NOT_FOUND;
+import static pl.cottageconnect.village.service.VillageService.ErrorMessages.VILLAGE_WITH_USER_ID_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -82,8 +83,11 @@ public class VillageService {
     }
 
     @Transactional
-    public void deleteVillage(Long villageId) {
+    public void deleteVillage(Long villageId, Principal connectedUser) {
         log.info("Deleting Village by ID: {}", villageId);
+        Integer userId = userService.getConnectedUser(connectedUser).getUserId();
+        villageDAO.findVillageByVillageIdAndUserId(villageId, userId)
+                .orElseThrow(() -> new NotFoundException(VILLAGE_WITH_USER_ID_NOT_FOUND.formatted(villageId, userId)));
 
         villageDAO.deleteVillage(villageId);
     }
@@ -128,5 +132,7 @@ public class VillageService {
     static final class ErrorMessages {
         static final String VILLAGE_NOT_FOUND =
                 "Village with ID: [%s] not found or user does not have access";
+        static final String VILLAGE_WITH_USER_ID_NOT_FOUND =
+                "Village with ID: [%s] and user ID: [%s] not found or you dont have access";
     }
 }

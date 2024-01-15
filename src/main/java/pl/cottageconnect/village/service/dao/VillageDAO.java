@@ -11,6 +11,8 @@ public interface VillageDAO {
 
     List<Village> findVillagesByUserId(Long ownerId);
 
+    Optional<Village> findVillageByVillageIdAndUserId(Long villageId, Integer userId);
+
     Village saveVillage(Village village);
 
     void deleteVillage(Long villageId);

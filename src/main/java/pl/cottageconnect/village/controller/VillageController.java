@@ -22,7 +22,7 @@ import static pl.cottageconnect.village.controller.VillageController.Routes.*;
 @RestController
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearer-token")
-@Tag(name = "manage villages", description = "Endpoints for <b>OWNER</b> to manage their villages")
+@Tag(name = "villages", description = "Endpoints for <b>OWNER</b> to manage their villages")
 public class VillageController {
 
     private final VillageService villageService;
@@ -95,9 +95,9 @@ public class VillageController {
             description = "Delete a village based on its unique ID."
     )
     @DeleteMapping(value = DELETE_BY_ID)
-    public ResponseEntity<String> deleteVillage(@PathVariable Long villageId) {
+    public ResponseEntity<String> deleteVillage(@PathVariable Long villageId, Principal connectedUser) {
 
-        villageService.deleteVillage(villageId);
+        villageService.deleteVillage(villageId, connectedUser);
         log.info("Village with ID: {} is deleted", villageId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
