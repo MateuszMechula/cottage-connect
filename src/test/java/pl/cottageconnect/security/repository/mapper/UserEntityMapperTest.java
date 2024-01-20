@@ -1,9 +1,7 @@
 package pl.cottageconnect.security.repository.mapper;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.jupiter.MockitoExtension;
 import pl.cottageconnect.security.domain.User;
 import pl.cottageconnect.security.entity.UserEntity;
 
@@ -11,7 +9,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.cottageconnect.util.TestDataFactoryUser.testUser;
 import static pl.cottageconnect.util.TestDataFactoryUser.testUserEntity;
 
-@ExtendWith(MockitoExtension.class)
 class UserEntityMapperTest {
     private final UserEntityMapper mapper = Mappers.getMapper(UserEntityMapper.class);
 

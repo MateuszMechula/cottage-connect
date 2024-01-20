@@ -3,6 +3,7 @@ package pl.cottageconnect.security.repository.jpa;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.cottageconnect.configuration.AbstractJpa;
 import pl.cottageconnect.security.entity.UserEntity;
 
 import java.util.Optional;
@@ -14,7 +15,7 @@ import static pl.cottageconnect.util.TestDataFactoryUser.testUserEntity;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 class UserJpaRepositoryTest extends AbstractJpa {
 
-    private UserJpaRepository repository;
+    private final UserJpaRepository repository;
 
     @Test
     void shouldFindUserByEmailSuccessfulLy() {
