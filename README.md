@@ -2,7 +2,7 @@
 
 ## ERD Diagram
 
-![ERD Diagram](src/main/resources/images/diagram_erd.png)
+![ERD Diagram](src/main/resources/images/cottage_connect_diagram_erd.png)
 
 ## Author
 
