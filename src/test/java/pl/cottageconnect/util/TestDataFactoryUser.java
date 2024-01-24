@@ -21,6 +21,7 @@ public class TestDataFactoryUser {
     public static final String TEST_USER_EMAIL = "jankowalski@gmail.com";
     public static final String TEST_USER_PASSWORD = "testPassword";
     public static final String TEST_USER_NEW_PASSWORD = "testPassword2";
+    public static final Integer TEST_USER_ID = 1;
     public static final String ROLE_CUSTOMER = "CUSTOMER";
     public static final String FIRSTNAME = "firstname";
     public static final String LASTNAME = "lastname";
@@ -65,6 +66,15 @@ public class TestDataFactoryUser {
 
     public static User testUser() {
         return User.builder()
+                .email(TEST_USER_EMAIL)
+                .password(TEST_USER_PASSWORD)
+                .roles(Set.of(Role.builder().build()))
+                .build();
+    }
+
+    public static User testUserWithId() {
+        return User.builder()
+                .userId(TEST_USER_ID)
                 .email(TEST_USER_EMAIL)
                 .password(TEST_USER_PASSWORD)
                 .roles(Set.of(Role.builder().build()))

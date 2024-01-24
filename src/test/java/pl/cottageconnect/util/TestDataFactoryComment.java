@@ -28,6 +28,24 @@ public class TestDataFactoryComment {
                 .build();
     }
 
+    public static Comment testComment3() {
+        return Comment.builder()
+                .content("content")
+                .type(CommentableType.VILLAGE)
+                .commentableId(1L)
+                .rating(5)
+                .build();
+    }
+
+    public static Comment testComment4() {
+        return Comment.builder()
+                .content("content")
+                .type(CommentableType.VILLAGE)
+                .commentableId(1L)
+                .rating(5)
+                .build();
+    }
+
     public static CommentEntity testCommentEntity() {
         return CommentEntity.builder()
                 .content("content")
@@ -42,14 +60,6 @@ public class TestDataFactoryComment {
                 .content("content")
                 .type(CommentableType.VILLAGE)
                 .commentableId(1L)
-                .rating(5)
-                .build();
-    }
-
-    public static Comment testComment4() {
-        return Comment.builder()
-                .content("content")
-                .type(CommentableType.VILLAGE)
                 .rating(5)
                 .build();
     }
