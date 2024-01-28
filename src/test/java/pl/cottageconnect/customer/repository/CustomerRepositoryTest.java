@@ -48,7 +48,6 @@ class CustomerRepositoryTest {
     void shouldFindCustomerByUserIdSuccessfully() {
         //given
         Integer userId = 1;
-        Long customerId = 1L;
         CustomerEntity customerEntity = testCustomerEntity();
         Customer customer = testCustomer();
 
