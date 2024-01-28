@@ -27,7 +27,6 @@ public class CottageService {
     private final UserService userService;
     private final CustomerService customerService;
 
-    @Transactional
     public Cottage getCottageWithCheck(Long cottageId, Principal connectedUser) {
 
         Cottage cottage = cottageDAO.getCottage(cottageId)
@@ -73,7 +72,7 @@ public class CottageService {
 
     }
 
-    private static Cottage updateCottage(Cottage toUpdate, Cottage existingCottage) {
+    Cottage updateCottage(Cottage toUpdate, Cottage existingCottage) {
         return Cottage.builder()
                 .cottageId(existingCottage.getCottageId())
                 .cottageNumber(getUpdatedValue(toUpdate.getCottageNumber(), existingCottage.getCottageNumber()))
@@ -107,6 +106,6 @@ public class CottageService {
     static final class ErrorMessages {
         static final String COTTAGE_NOT_FOUND = "Cottage with ID: [%s] not found or you dont have access";
         static final String COTTAGE_DELETE_ACCESS_DENIED =
-                "Access denied. User [%s] does not have permissions to delete this cottage.";
+                "Access denied. User [%s] does not have permissions to delete or update this cottage.";
     }
 }

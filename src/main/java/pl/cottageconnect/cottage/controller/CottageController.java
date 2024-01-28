@@ -15,7 +15,6 @@ import pl.cottageconnect.cottage.service.CottageService;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static pl.cottageconnect.cottage.controller.CottageController.Routes.*;
 
@@ -51,7 +50,7 @@ public class CottageController {
         List<Cottage> cottages = cottageService.findAllCottages(villageId, connectedUser);
         List<CottageDTO> cottageDTOs = cottages.stream()
                 .map(cottageMapper::mapToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.status(HttpStatus.OK).body(cottageDTOs);
     }
@@ -78,7 +77,7 @@ public class CottageController {
             description = "Create a new cottage with the provided information."
     )
     @PostMapping(value = SAVE_COTTAGE)
-    public ResponseEntity<?> addCottage(
+    public ResponseEntity<Void> addCottage(
             @PathVariable Long villageId,
             @RequestBody CottageDTO cottageDTO,
             Principal connectedUser
