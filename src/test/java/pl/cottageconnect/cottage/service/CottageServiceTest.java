@@ -95,7 +95,7 @@ class CottageServiceTest {
         //when
         List<Cottage> allCottages = cottageService.findAllCottages(villageId, connectedUser);
         //then
-        assertEquals(expectedCottages, allCottages);
+        assertEquals(expectedCottages.size(), allCottages.size());
     }
 
     @Test

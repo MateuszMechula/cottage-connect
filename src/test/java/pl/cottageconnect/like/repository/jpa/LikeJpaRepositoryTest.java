@@ -3,6 +3,7 @@ package pl.cottageconnect.like.repository.jpa;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 import pl.cottageconnect.configuration.AbstractJpa;
 import pl.cottageconnect.like.entity.LikeEntity;
 import pl.cottageconnect.like.enums.LikeableType;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pl.cottageconnect.util.TestDataFactoryLike.testLikeEntity;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@TestPropertySource(properties = "test.name=LikeJpaRepositoryTest")
 class LikeJpaRepositoryTest extends AbstractJpa {
 
     private final LikeJpaRepository likeJpaRepository;

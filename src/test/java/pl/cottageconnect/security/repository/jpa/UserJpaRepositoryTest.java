@@ -3,6 +3,7 @@ package pl.cottageconnect.security.repository.jpa;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.TestPropertySource;
 import pl.cottageconnect.configuration.AbstractJpa;
 import pl.cottageconnect.security.entity.UserEntity;
 
@@ -13,6 +14,7 @@ import static pl.cottageconnect.util.TestDataFactoryUser.TEST_USER_EMAIL;
 import static pl.cottageconnect.util.TestDataFactoryUser.testUserEntity;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@TestPropertySource(properties = "test.name=UserJpaRepositoryTest")
 class UserJpaRepositoryTest extends AbstractJpa {
 
     private final UserJpaRepository repository;

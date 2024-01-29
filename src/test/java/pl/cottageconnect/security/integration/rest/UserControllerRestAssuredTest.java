@@ -3,6 +3,7 @@ package pl.cottageconnect.security.integration.rest;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import pl.cottageconnect.configuration.RestAssuredIntegrationTestBase;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
@@ -13,7 +14,8 @@ import pl.cottageconnect.security.integration.support.UserControllerTestSupport;
 import static pl.cottageconnect.util.TestDataFactoryUser.testChangePasswordRequest;
 import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequestCustomer;
 
-public class UserControllerRestAssuredTest
+@TestPropertySource(properties = "test.name=AuthenticationControllerRestAssuredTest")
+class UserControllerRestAssuredTest
         extends RestAssuredIntegrationTestBase
         implements UserControllerTestSupport, AuthenticationControllerTestSupport {
 

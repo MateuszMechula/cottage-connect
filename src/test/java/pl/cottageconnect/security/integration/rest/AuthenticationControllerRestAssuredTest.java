@@ -1,6 +1,7 @@
 package pl.cottageconnect.security.integration.rest;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.TestPropertySource;
 import pl.cottageconnect.configuration.RestAssuredIntegrationTestBase;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
@@ -11,7 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.cottageconnect.util.TestDataFactoryUser.testAuthenticationRequest;
 import static pl.cottageconnect.util.TestDataFactoryUser.testRegistrationRequestCustomer;
 
-public class AuthenticationControllerRestAssuredTest
+@TestPropertySource(properties = "test.name=AuthenticationControllerRestAssuredTest")
+class AuthenticationControllerRestAssuredTest
         extends RestAssuredIntegrationTestBase
         implements AuthenticationControllerTestSupport {
 

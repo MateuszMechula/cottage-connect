@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.TestPropertySource;
 import pl.cottageconnect.comment.entity.CommentEntity;
 import pl.cottageconnect.configuration.AbstractJpa;
 import pl.cottageconnect.security.entity.UserEntity;
@@ -18,6 +19,7 @@ import static pl.cottageconnect.util.TestDataFactoryComment.testCommentEntity2;
 import static pl.cottageconnect.util.TestDataFactoryUser.testUserEntity;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
+@TestPropertySource(properties = "test.name=CommentJpaRepositoryTest")
 class CommentJpaRepositoryTest extends AbstractJpa {
 
     private final UserJpaRepository userJpaRepository;
