@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.cottageconnect.like.controller.dto.LikeDTO;
 import pl.cottageconnect.like.controller.dto.mapper.LikeMapper;
 import pl.cottageconnect.like.domain.Like;
@@ -34,7 +31,11 @@ public class LikeController {
             description = "You can add like to COMMENT or VILLAGE POST by ID (likeableId = commentId or villagePostId)"
     )
     @PostMapping(value = ADD_LIKE)
-    public ResponseEntity<LikeDTO> addLike(Long likeableId, LikeableType type, Principal connectedUser) {
+    public ResponseEntity<LikeDTO> addLike(
+            @RequestParam(name = "likeableId") Long likeableId,
+            @RequestParam(name = "type") LikeableType type,
+            Principal connectedUser) {
+
         Like like = likeService.addLike(likeableId, type, connectedUser);
         LikeDTO likeDTO = likeMapper.mapToDTO(like);
         return ResponseEntity.ok(likeDTO);

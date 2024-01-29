@@ -26,7 +26,6 @@ public class LikeService {
     private final CommentService commentService;
     private final VillagePostService villagePostService;
 
-    @Transactional
     public Like getLikeById(Long likeId) {
         return likeDAO.getLikeById(likeId)
                 .orElseThrow(() -> new NotFoundException(LIKE_NOT_FOUND.formatted(likeId)));
