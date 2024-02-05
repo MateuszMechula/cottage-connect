@@ -11,16 +11,11 @@ import pl.cottageconnect.photo.enums.PhotoableType;
 import pl.cottageconnect.photo.service.dao.PhotoDAO;
 import pl.cottageconnect.security.service.UserService;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.UUID;
 
-import static pl.cottageconnect.photo.service.PhotoService.ErrorMessages.*;
+import static pl.cottageconnect.photo.service.PhotoService.ErrorMessages.PHOTO_NOT_FOUND;
+import static pl.cottageconnect.photo.service.PhotoService.ErrorMessages.UNSUPPORTED_PHOTOABLE_TYPE;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +24,10 @@ public class PhotoService {
     private final PhotoDAO photoDAO;
     private final UserService userService;
     private final CottageService cottageService;
+    private final FileStorageService fileStorageService;
 
     @Transactional
-    public Photo findPhotoById(Long photoId) {
+    public Photo getPhotoById(Long photoId) {
         return photoDAO.findPhotoById(photoId)
                 .orElseThrow(() -> new NotFoundException(PHOTO_NOT_FOUND.formatted(photoId)));
     }
@@ -41,7 +37,7 @@ public class PhotoService {
             throws IOException {
 
         validatePhotoable(photoableId, type, connectedUser);
-        String fileName = saveImageToFileSystem(file);
+        String fileName = fileStorageService.saveImageToFileSystem(file);
         Photo photoToSave = buildPhoto(photoableId, type, fileName);
 
         photoDAO.addPhoto(photoToSave);
@@ -49,13 +45,13 @@ public class PhotoService {
 
     @Transactional
     public void deletePhoto(Long photoId, Principal connectedUser) throws IOException {
-        Photo photoToDelete = findPhotoById(photoId);
+        Photo photoToDelete = getPhotoById(photoId);
         Long photoableId = photoToDelete.getPhotoableId();
         PhotoableType type = photoToDelete.getType();
         validatePhotoable(photoableId, type, connectedUser);
 
         String photoPath = photoToDelete.getPath();
-        deleteImageFromFileSystem(photoPath);
+        fileStorageService.deleteImageFromFileSystem(photoPath);
 
         photoDAO.deleteById(photoId);
     }
@@ -76,33 +72,8 @@ public class PhotoService {
                 .build();
     }
 
-    private String saveImageToFileSystem(MultipartFile imageFile) throws IOException {
-        String uploadDir = "src/main/resources/static/images";
-        String fileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir, fileName);
-
-        Files.createDirectories(filePath.getParent());
-        try (OutputStream os = Files.newOutputStream(filePath)) {
-            os.write(imageFile.getBytes());
-        }
-
-        return fileName;
-    }
-
-    private void deleteImageFromFileSystem(String photoPath) throws IOException {
-        String uploadDir = "src/main/resources/static/images";
-        Path filePath = Paths.get(uploadDir, photoPath);
-
-        if (Files.exists(filePath)) {
-            Files.delete(filePath);
-        } else {
-            throw new FileNotFoundException(FILE_NOT_FOUND.formatted(filePath));
-        }
-    }
-
     static final class ErrorMessages {
         static final String UNSUPPORTED_PHOTOABLE_TYPE = "Unsupported photoable Type: [%s]";
         static final String PHOTO_NOT_FOUND = "Photo with ID: [%s] not found or you dont have access";
-        static final String FILE_NOT_FOUND = "File not found: [%s]";
     }
 }
