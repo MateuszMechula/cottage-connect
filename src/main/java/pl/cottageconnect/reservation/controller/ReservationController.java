@@ -27,6 +27,8 @@ public class ReservationController {
 
     private final ReservationMapper reservationMapper;
     private final ReservationService reservationService;
+    public static final String RESERVATION_CONFIRMED = "Reservation confirmed";
+    public static final String RESERVATION_SUCCESS_MESSAGE = "Reservation added successfully";
 
     @Operation(
             summary = "Retrieve Reservations by Customer ID (ONLY CUSTOMER)",
@@ -40,10 +42,17 @@ public class ReservationController {
             Pageable pageable,
             Principal connectedUser) {
 
-        Page<ReservationDTO> response = reservationService
-                .getAllReservationsByCustomerId(customerId, status, connectedUser, pageable).map(reservationMapper::mapToDTO);
-
-        return ResponseEntity.ok(response);
+        if (status != null) {
+            Page<ReservationDTO> responseWithStatus = reservationService
+                    .getAllReservationsByCustomerIdAndStatus(customerId, status, connectedUser, pageable)
+                    .map(reservationMapper::mapToDTO);
+            return ResponseEntity.ok(responseWithStatus);
+        } else {
+            Page<ReservationDTO> response = reservationService
+                    .getAllReservationsByCustomerId(customerId, connectedUser, pageable)
+                    .map(reservationMapper::mapToDTO);
+            return ResponseEntity.ok(response);
+        }
     }
 
     @Operation(
@@ -58,10 +67,17 @@ public class ReservationController {
             Pageable pageable,
             Principal connectedUser) {
 
-        Page<ReservationDTO> response = reservationService
-                .getAllReservationsByCottageId(cottageId, status, connectedUser, pageable).map(reservationMapper::mapToDTO);
-
-        return ResponseEntity.ok(response);
+        if (status != null) {
+            Page<ReservationDTO> responseWithStatus = reservationService
+                    .getAllReservationsByCottageIdAndStatus(cottageId, status, connectedUser, pageable)
+                    .map(reservationMapper::mapToDTO);
+            return ResponseEntity.ok(responseWithStatus);
+        } else {
+            Page<ReservationDTO> response = reservationService
+                    .getAllReservationsByCottageId(cottageId, connectedUser, pageable)
+                    .map(reservationMapper::mapToDTO);
+            return ResponseEntity.ok(response);
+        }
     }
 
     @Operation(
@@ -71,14 +87,16 @@ public class ReservationController {
     )
     @PostMapping(value = ADD_RESERVATION)
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity<?> addReservation(@RequestParam Long cottageId,
-                                            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dayIn,
-                                            @RequestParam @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate dayOut,
-                                            Principal connectedUser) {
+    public ResponseEntity<String> addReservation(@RequestParam Long cottageId,
+                                                 @RequestParam(name = "dayIn") @DateTimeFormat(pattern = "dd-MM-yyyy")
+                                                 LocalDate dayIn,
+                                                 @RequestParam(name = "dayOut") @DateTimeFormat(pattern = "dd-MM-yyyy")
+                                                 LocalDate dayOut,
+                                                 Principal connectedUser) {
 
         reservationService.addReservation(cottageId, dayIn, dayOut, connectedUser);
 
-        return ResponseEntity.ok("Reservation added successfully");
+        return ResponseEntity.ok(RESERVATION_SUCCESS_MESSAGE);
     }
 
     @Operation(
@@ -88,9 +106,9 @@ public class ReservationController {
     )
     @PostMapping(value = CONFIRM_RESERVATION)
     @PreAuthorize("hasAuthority('OWNER')")
-    public ResponseEntity<?> confirmReservation(@PathVariable Long reservationId, Principal connectedUser) {
+    public ResponseEntity<String> confirmReservation(@PathVariable Long reservationId, Principal connectedUser) {
         reservationService.confirmReservationById(reservationId, connectedUser);
-        return ResponseEntity.ok("Reservation confirmed");
+        return ResponseEntity.ok(RESERVATION_CONFIRMED);
     }
 
     @Operation(
@@ -99,18 +117,18 @@ public class ReservationController {
     )
     @PreAuthorize("hasAuthority('OWNER')")
     @DeleteMapping(value = DELETE_RESERVATION)
-    public ResponseEntity<?> deleteReservation(@PathVariable Long reservationId, Principal connectedUSer) {
+    public ResponseEntity<Void> deleteReservation(@PathVariable Long reservationId, Principal connectedUSer) {
         reservationService.deleteReservationById(reservationId, connectedUSer);
         return ResponseEntity.noContent().build();
     }
 
 
-    static final class Routes {
-        static final String ROOT = "/api/v1/reservations";
-        static final String ADD_RESERVATION = ROOT;
-        static final String CONFIRM_RESERVATION = ROOT + "/{reservationId}";
-        static final String DELETE_RESERVATION = ROOT + "/{reservationId}";
-        static final String GET_RESERVATIONS_BY_CUSTOMER_ID = ROOT + "/customers/{customerId}";
-        static final String GET_RESERVATIONS_BY_COTTAGE_ID = ROOT + "/cottages/{cottageId}";
+    public static final class Routes {
+        public static final String ROOT = "/api/v1/reservations";
+        public static final String ADD_RESERVATION = ROOT;
+        public static final String CONFIRM_RESERVATION = ROOT + "/{reservationId}";
+        public static final String DELETE_RESERVATION = ROOT + "/{reservationId}";
+        public static final String GET_RESERVATIONS_BY_CUSTOMER_ID = ROOT + "/customers/{customerId}";
+        public static final String GET_RESERVATIONS_BY_COTTAGE_ID = ROOT + "/cottages/{cottageId}";
     }
 }

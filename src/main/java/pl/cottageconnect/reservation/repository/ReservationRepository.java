@@ -31,9 +31,9 @@ public class ReservationRepository implements ReservationDAO {
     }
 
     @Override
-    public Page<Reservation> findReservationsByCustomerIdAndStatus(Long customerId, Boolean status, Pageable pageable) {
+    public Optional<Page<Reservation>> findReservationsByCustomerIdAndStatus(Long customerId, Boolean status, Pageable pageable) {
         return reservationJpaRepository.getAllReservationsByCustomerIdAndStatus(customerId, status, pageable)
-                .map(reservationEntityMapper::mapFromEntity);
+                .map(reservationPage -> reservationPage.map(reservationEntityMapper::mapFromEntity));
     }
 
     @Override

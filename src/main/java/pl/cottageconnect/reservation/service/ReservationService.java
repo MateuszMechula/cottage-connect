@@ -40,29 +40,40 @@ public class ReservationService {
     }
 
     @Transactional
-    public Page<Reservation> getAllReservationsByCustomerId(Long customerId, Boolean status, Principal connectedUser,
+    public Page<Reservation> getAllReservationsByCustomerId(Long customerId, Principal connectedUser,
                                                             Pageable pageable) {
         Integer userId = userService.getConnectedUser(connectedUser).getUserId();
         customerService.findCustomerById(customerId);
         customerService.findCustomerByUserId(userId);
 
-        if (status != null) {
-            return reservationDAO.findReservationsByCustomerIdAndStatus(customerId, status, pageable);
-        } else {
-            return reservationDAO.findReservationsByCustomerId(customerId, pageable);
-        }
+        return reservationDAO.findReservationsByCustomerId(customerId, pageable);
     }
 
     @Transactional
-    public Page<Reservation> getAllReservationsByCottageId(Long cottageId, Boolean status,
-                                                           Principal connectedUser, Pageable pageable) {
+    public Page<Reservation> getAllReservationsByCustomerIdAndStatus(Long customerId, Boolean status, Principal connectedUser,
+                                                                     Pageable pageable) {
+        Integer userId = userService.getConnectedUser(connectedUser).getUserId();
+        customerService.findCustomerById(customerId);
+        customerService.findCustomerByUserId(userId);
+
+        return reservationDAO.findReservationsByCustomerIdAndStatus(customerId, status, pageable)
+                .orElseThrow(() -> new NotFoundException(RESERVATIONS_WITH_CUSTOMER_ID_AND_STATUS_NOT_FOUND
+                        .formatted(customerId, status)));
+    }
+
+    @Transactional
+    public Page<Reservation> getAllReservationsByCottageId(Long cottageId, Principal connectedUser, Pageable pageable) {
         cottageService.getCottageWithCheck(cottageId, connectedUser);
 
-        if (status != null) {
-            return reservationDAO.findReservationsByCottageIdAndStatus(cottageId, status, pageable);
-        } else {
-            return reservationDAO.findReservationsByCottageId(cottageId, pageable);
-        }
+        return reservationDAO.findReservationsByCottageId(cottageId, pageable);
+    }
+
+    @Transactional
+    public Page<Reservation> getAllReservationsByCottageIdAndStatus(Long cottageId, Boolean status,
+                                                                    Principal connectedUser, Pageable pageable) {
+        cottageService.getCottageWithCheck(cottageId, connectedUser);
+
+        return reservationDAO.findReservationsByCottageIdAndStatus(cottageId, status, pageable);
     }
 
 
@@ -77,28 +88,32 @@ public class ReservationService {
         checkCottageAvailability(cottage, startDateTime, endDateTime);
         Integer userId = userService.getConnectedUser(connectedUser).getUserId();
         Customer customer = customerService.findCustomerByUserId(userId);
-        Reservation reservationToSave = createReservation(startDateTime, endDateTime, customer, cottage);
+        Reservation reservationToSave = createReservation(startDateTime, endDateTime, FALSE, customer,
+                cottage);
 
         reservationDAO.addReservationToCottage(reservationToSave);
     }
 
     @Transactional
     public void confirmReservationById(Long reservationId, Principal connectedUser) {
-        Reservation reservationToConfirm = findReservationById(reservationId);
-        Boolean status = reservationToConfirm.getStatus();
+        Reservation resToConfirm = findReservationById(reservationId);
+        Boolean status = resToConfirm.status();
 
-        Long cottageId = reservationToConfirm.getCottage().getCottageId();
+        Long cottageId = resToConfirm.cottage().getCottageId();
         cottageService.getCottageWithCheck(cottageId, connectedUser);
 
         if (status.equals(FALSE)) {
-            reservationDAO.addReservationToCottage(reservationToConfirm.withStatus(TRUE));
+            Reservation updatedReservation = createReservation(resToConfirm.dayIn(), resToConfirm.dayOut(), TRUE, resToConfirm.customer(),
+                    resToConfirm.cottage());
+
+            reservationDAO.addReservationToCottage(updatedReservation);
         }
     }
 
     @Transactional
     public void deleteReservationById(Long reservationId, Principal connectedUSer) {
         Reservation reservation = findReservationById(reservationId);
-        Integer expectedUserId = reservation.getCottage().getVillage().getOwner().getUserId();
+        Integer expectedUserId = reservation.cottage().getVillage().getOwner().getUserId();
         Integer userId = userService.getConnectedUser(connectedUSer).getUserId();
         if (expectedUserId.equals(userId)) {
             reservationDAO.deleteReservation(reservationId);
@@ -123,21 +138,21 @@ public class ReservationService {
     private void checkCottageAvailability(Cottage cottage, OffsetDateTime startDateTime, OffsetDateTime endDateTime) {
         boolean isCottageOccupied = cottage.getReservations().stream()
                 .anyMatch(res ->
-                        (startDateTime.isAfter(res.getDayIn()) && startDateTime.isBefore(res.getDayOut()))
-                                || (endDateTime.isAfter(res.getDayIn()) && endDateTime.isBefore(res.getDayOut()))
-                                || (startDateTime.isEqual(res.getDayIn()) || endDateTime.isEqual(res.getDayOut())));
+                        (startDateTime.isAfter(res.dayIn()) && startDateTime.isBefore(res.dayOut()))
+                                || (endDateTime.isAfter(res.dayIn()) && endDateTime.isBefore(res.dayOut()))
+                                || (startDateTime.isEqual(res.dayIn()) || endDateTime.isEqual(res.dayOut())));
 
         if (isCottageOccupied) {
             throw new ReservationAlreadyExistsException(RESERVATION_ALREADY_EXISTS);
         }
     }
 
-    private Reservation createReservation(OffsetDateTime startDateTime, OffsetDateTime endDateTime, Customer customer,
-                                          Cottage cottage) {
+    private Reservation createReservation(OffsetDateTime startDateTime, OffsetDateTime endDateTime, Boolean status,
+                                          Customer customer, Cottage cottage) {
         return Reservation.builder()
                 .dayIn(startDateTime)
                 .dayOut(endDateTime)
-                .status(false)
+                .status(status)
                 .customer(customer)
                 .cottage(cottage)
                 .build();
@@ -145,6 +160,8 @@ public class ReservationService {
 
     static final class ErrorMessages {
         static final String RESERVATION_NOT_FOUND = "Reservation with ID: [%s] not found";
+        static final String RESERVATIONS_WITH_CUSTOMER_ID_AND_STATUS_NOT_FOUND = "Reservations with customer ID [%s] and " +
+                "status [%s] not found";
         static final String RESERVATION_ALREADY_EXISTS = "Reservation already exists for the specified date range.";
         static final String DATE_VALIDATION_ERROR = "Date validation error: Start day cannot be: before the end day or" +
                 "before today";

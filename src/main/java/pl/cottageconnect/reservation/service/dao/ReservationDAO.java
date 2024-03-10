@@ -11,7 +11,7 @@ public interface ReservationDAO {
 
     Page<Reservation> findReservationsByCustomerId(Long customerId, Pageable pageable);
 
-    Page<Reservation> findReservationsByCustomerIdAndStatus(Long customerId, Boolean status, Pageable pageable);
+    Optional<Page<Reservation>> findReservationsByCustomerIdAndStatus(Long customerId, Boolean status, Pageable pageable);
 
     Page<Reservation> findReservationsByCottageId(Long cottageId, Pageable pageable);
 
