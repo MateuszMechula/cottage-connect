@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cottageconnect.security.UserService;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
-import pl.cottageconnect.security.service.UserService;
 
 import static pl.cottageconnect.security.controller.AuthenticationController.BASE_PATH;
 

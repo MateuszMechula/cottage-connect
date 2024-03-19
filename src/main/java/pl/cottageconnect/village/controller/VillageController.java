@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.cottageconnect.village.Village;
+import pl.cottageconnect.village.VillageService;
 import pl.cottageconnect.village.controller.dto.VillageDTO;
 import pl.cottageconnect.village.controller.dto.mapper.VillageMapper;
-import pl.cottageconnect.village.domain.Village;
-import pl.cottageconnect.village.service.VillageService;
 
 import java.security.Principal;
 import java.util.List;

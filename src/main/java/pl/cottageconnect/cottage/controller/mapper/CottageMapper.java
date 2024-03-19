@@ -3,8 +3,8 @@ package pl.cottageconnect.cottage.controller.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
+import pl.cottageconnect.cottage.Cottage;
 import pl.cottageconnect.cottage.controller.dto.CottageDTO;
-import pl.cottageconnect.cottage.domain.Cottage;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE)
 public interface CottageMapper {

@@ -1,9 +1,10 @@
 package pl.cottageconnect.util;
 
+import pl.cottageconnect.cottage.Cottage;
+import pl.cottageconnect.cottage.CottageEntity;
 import pl.cottageconnect.cottage.controller.dto.CottageDTO;
-import pl.cottageconnect.cottage.domain.Cottage;
-import pl.cottageconnect.cottage.entity.CottageEntity;
-import pl.cottageconnect.village.domain.Village;
+import pl.cottageconnect.owner.Owner;
+import pl.cottageconnect.village.Village;
 
 import java.math.BigDecimal;
 
@@ -41,6 +42,20 @@ public class TestDataFactoryCottage {
                 .description("exclusive")
                 .village(Village.builder()
                         .villageId(1L)
+                        .build())
+                .build();
+    }
+
+    public static Cottage testCottage4() {
+        return Cottage.builder()
+                .cottageId(3L)
+                .cottageNumber(2)
+                .cottageSize(2)
+                .price(BigDecimal.valueOf(50))
+                .description("exclusive")
+                .village(Village.builder()
+                        .villageId(1L)
+                        .owner(Owner.builder().build())
                         .build())
                 .build();
     }

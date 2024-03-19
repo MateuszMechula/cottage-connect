@@ -1,16 +1,16 @@
 package pl.cottageconnect.util;
 
 import lombok.experimental.UtilityClass;
-import pl.cottageconnect.customer.domain.Customer;
-import pl.cottageconnect.owner.domain.Owner;
+import pl.cottageconnect.customer.Customer;
+import pl.cottageconnect.owner.Owner;
+import pl.cottageconnect.security.Role;
+import pl.cottageconnect.security.RoleEntity;
+import pl.cottageconnect.security.User;
+import pl.cottageconnect.security.UserEntity;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
-import pl.cottageconnect.security.domain.Role;
-import pl.cottageconnect.security.domain.User;
-import pl.cottageconnect.security.entity.RoleEntity;
-import pl.cottageconnect.security.entity.UserEntity;
 
 import java.util.Set;
 
@@ -22,11 +22,13 @@ public class TestDataFactoryUser {
     public static final String TEST_USER_PASSWORD = "testPassword";
     public static final String TEST_USER_NEW_PASSWORD = "testPassword2";
     public static final Integer TEST_USER_ID = 1;
+    public static final Integer TEST_CUSTOMER_ROLE_ID = 2;
+    public static final Integer TEST_OWNER_ROLE_ID = 1;
     public static final String ROLE_CUSTOMER = "CUSTOMER";
+    public static final String ROLE_OWNER = "OWNER";
     public static final String FIRSTNAME = "firstname";
     public static final String LASTNAME = "lastname";
     public static final String PHONE = "505403330";
-    public static final String ROLE_OWNER = "OWNER";
 
     public static RegistrationRequestDTO testRegistrationRequestCustomer() {
         return RegistrationRequestDTO.builder()
@@ -64,11 +66,25 @@ public class TestDataFactoryUser {
                 .build();
     }
 
-    public static User testUser() {
+    public static User testUserRoleCustomer() {
         return User.builder()
                 .email(TEST_USER_EMAIL)
                 .password(TEST_USER_PASSWORD)
-                .roles(Set.of(Role.builder().build()))
+                .roles(Set.of(Role.builder()
+                        .roleId(TEST_CUSTOMER_ROLE_ID)
+                        .role(ROLE_CUSTOMER)
+                        .build()))
+                .build();
+    }
+
+    public static User testUserRoleOwner() {
+        return User.builder()
+                .email(TEST_USER_EMAIL)
+                .password(TEST_USER_PASSWORD)
+                .roles(Set.of(Role.builder()
+                        .roleId(TEST_OWNER_ROLE_ID)
+                        .role(ROLE_OWNER)
+                        .build()))
                 .build();
     }
 

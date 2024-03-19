@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.cottageconnect.comment.Comment;
+import pl.cottageconnect.comment.CommentService;
+import pl.cottageconnect.comment.CommentableType;
 import pl.cottageconnect.comment.controller.dto.CommentRequestDTO;
 import pl.cottageconnect.comment.controller.dto.CommentResponseDTO;
-import pl.cottageconnect.comment.controller.dto.mapper.CommentRequestMapper;
-import pl.cottageconnect.comment.controller.dto.mapper.CommentResponseMapper;
-import pl.cottageconnect.comment.domain.Comment;
-import pl.cottageconnect.comment.enums.CommentableType;
-import pl.cottageconnect.comment.service.CommentService;
+import pl.cottageconnect.comment.controller.mapper.CommentRequestMapper;
+import pl.cottageconnect.comment.controller.mapper.CommentResponseMapper;
 
 import java.security.Principal;
 

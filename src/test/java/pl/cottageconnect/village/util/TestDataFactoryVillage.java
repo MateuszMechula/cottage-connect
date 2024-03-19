@@ -1,9 +1,9 @@
 package pl.cottageconnect.village.util;
 
-import pl.cottageconnect.address.controller.dto.AddressDTO;
-import pl.cottageconnect.address.domain.Address;
+import pl.cottageconnect.address.Address;
+import pl.cottageconnect.address.AddressDTO;
+import pl.cottageconnect.village.Village;
 import pl.cottageconnect.village.controller.dto.VillageDTO;
-import pl.cottageconnect.village.domain.Village;
 
 public class TestDataFactoryVillage {
 

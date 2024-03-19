@@ -19,6 +19,7 @@ class UserControllerRestAssuredTest
         extends RestAssuredIntegrationTestBase
         implements UserControllerTestSupport, AuthenticationControllerTestSupport {
 
+
     @Test
     void shouldChangePasswordForUser() {
         //given

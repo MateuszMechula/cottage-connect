@@ -1,7 +1,7 @@
 package pl.cottageconnect.util;
 
-import pl.cottageconnect.customer.domain.Customer;
-import pl.cottageconnect.customer.entity.CustomerEntity;
+import pl.cottageconnect.customer.Customer;
+import pl.cottageconnect.customer.CustomerEntity;
 
 public class TestDataFactoryCustomer {
 

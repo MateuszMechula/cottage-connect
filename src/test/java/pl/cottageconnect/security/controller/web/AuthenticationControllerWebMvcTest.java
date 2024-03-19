@@ -9,12 +9,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.cottageconnect.security.configuration.JwtAuthFilter;
+import pl.cottageconnect.security.JwtAuthFilter;
+import pl.cottageconnect.security.UserService;
 import pl.cottageconnect.security.controller.AuthenticationController;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
-import pl.cottageconnect.security.service.UserService;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

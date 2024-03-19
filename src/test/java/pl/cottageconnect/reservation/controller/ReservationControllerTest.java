@@ -12,10 +12,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.cottageconnect.reservation.Reservation;
+import pl.cottageconnect.reservation.ReservationService;
 import pl.cottageconnect.reservation.controller.mapper.ReservationMapper;
-import pl.cottageconnect.reservation.domain.Reservation;
-import pl.cottageconnect.reservation.service.ReservationService;
-import pl.cottageconnect.security.configuration.JwtAuthFilter;
+import pl.cottageconnect.security.JwtAuthFilter;
 
 import java.security.Principal;
 import java.time.LocalDate;

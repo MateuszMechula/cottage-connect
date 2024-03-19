@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.cottageconnect.like.Like;
+import pl.cottageconnect.like.LikeService;
+import pl.cottageconnect.like.LikeableType;
 import pl.cottageconnect.like.controller.dto.LikeDTO;
 import pl.cottageconnect.like.controller.dto.mapper.LikeMapper;
-import pl.cottageconnect.like.domain.Like;
-import pl.cottageconnect.like.enums.LikeableType;
-import pl.cottageconnect.like.service.LikeService;
-import pl.cottageconnect.security.configuration.JwtAuthFilter;
+import pl.cottageconnect.security.JwtAuthFilter;
 
 import java.security.Principal;
 

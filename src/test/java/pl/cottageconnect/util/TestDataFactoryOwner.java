@@ -1,7 +1,7 @@
 package pl.cottageconnect.util;
 
-import pl.cottageconnect.owner.domain.Owner;
-import pl.cottageconnect.owner.entity.OwnerEntity;
+import pl.cottageconnect.owner.Owner;
+import pl.cottageconnect.owner.OwnerEntity;
 
 public class TestDataFactoryOwner {
 

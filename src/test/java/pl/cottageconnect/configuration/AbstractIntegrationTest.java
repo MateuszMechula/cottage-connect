@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import pl.cottageconnect.CottageConnectApplication;
-import pl.cottageconnect.customer.repository.jpa.CustomerJpaRepository;
-import pl.cottageconnect.owner.repository.jpa.OwnerJpaRepository;
-import pl.cottageconnect.security.repository.jpa.UserJpaRepository;
+import pl.cottageconnect.customer.CustomerRepositoryManager;
+import pl.cottageconnect.owner.OwnerRepositoryManager;
+import pl.cottageconnect.security.UserRepositoryManager;
 
 @ActiveProfiles("test")
 @Import(PersistenceContainerTestConfiguration.class)
@@ -19,17 +19,17 @@ import pl.cottageconnect.security.repository.jpa.UserJpaRepository;
 public class AbstractIntegrationTest {
 
     @Autowired
-    private UserJpaRepository userJpaRepository;
+    private UserRepositoryManager userRepositoryManager;
     @Autowired
-    private OwnerJpaRepository ownerJpaRepository;
+    private OwnerRepositoryManager ownerRepositoryManager;
     @Autowired
-    private CustomerJpaRepository customerJpaRepository;
+    private CustomerRepositoryManager customerRepositoryManager;
 
 
     @AfterEach
     void afterEach() {
-        customerJpaRepository.deleteAll();
-        ownerJpaRepository.deleteAll();
-        userJpaRepository.deleteAll();
+        customerRepositoryManager.deleteAll();
+        ownerRepositoryManager.deleteAll();
+        userRepositoryManager.deleteAll();
     }
 }

@@ -10,9 +10,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.cottageconnect.reservation.ReservationService;
 import pl.cottageconnect.reservation.controller.dto.ReservationDTO;
 import pl.cottageconnect.reservation.controller.mapper.ReservationMapper;
-import pl.cottageconnect.reservation.service.ReservationService;
 
 import java.security.Principal;
 import java.time.LocalDate;

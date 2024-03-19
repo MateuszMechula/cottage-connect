@@ -2,7 +2,7 @@ package pl.cottageconnect.comment.controller.dto;
 
 
 import lombok.Builder;
-import pl.cottageconnect.comment.enums.CommentableType;
+import pl.cottageconnect.comment.CommentableType;
 
 
 @Builder

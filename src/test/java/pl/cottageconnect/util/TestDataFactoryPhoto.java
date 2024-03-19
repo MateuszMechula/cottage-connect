@@ -1,8 +1,8 @@
 package pl.cottageconnect.util;
 
-import pl.cottageconnect.photo.domain.Photo;
-import pl.cottageconnect.photo.entity.PhotoEntity;
-import pl.cottageconnect.photo.enums.PhotoableType;
+import pl.cottageconnect.photo.Photo;
+import pl.cottageconnect.photo.PhotoEntity;
+import pl.cottageconnect.photo.PhotoableType;
 
 public class TestDataFactoryPhoto {
 

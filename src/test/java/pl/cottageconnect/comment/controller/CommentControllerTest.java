@@ -13,14 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.cottageconnect.comment.Comment;
+import pl.cottageconnect.comment.CommentService;
+import pl.cottageconnect.comment.CommentableType;
 import pl.cottageconnect.comment.controller.dto.CommentRequestDTO;
 import pl.cottageconnect.comment.controller.dto.CommentResponseDTO;
-import pl.cottageconnect.comment.controller.dto.mapper.CommentRequestMapper;
-import pl.cottageconnect.comment.controller.dto.mapper.CommentResponseMapper;
-import pl.cottageconnect.comment.domain.Comment;
-import pl.cottageconnect.comment.enums.CommentableType;
-import pl.cottageconnect.comment.service.CommentService;
-import pl.cottageconnect.security.configuration.JwtAuthFilter;
+import pl.cottageconnect.comment.controller.mapper.CommentRequestMapper;
+import pl.cottageconnect.comment.controller.mapper.CommentResponseMapper;
+import pl.cottageconnect.security.JwtAuthFilter;
 
 import java.security.Principal;
 import java.util.List;
@@ -31,8 +31,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.cottageconnect.comment.TestDataFactoryComment.*;
 import static pl.cottageconnect.comment.controller.CommentController.Routes.*;
-import static pl.cottageconnect.util.TestDataFactoryComment.*;
 
 @WebMvcTest(CommentController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -41,7 +41,7 @@ class CommentControllerTest {
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
     @MockBean
-    private CommentService commentService;
+    private CommentService commentServiceImpl;
     @MockBean
     private CommentRequestMapper commentRequestMapper;
     @MockBean
@@ -56,14 +56,21 @@ class CommentControllerTest {
         CommentableType type = CommentableType.VILLAGE;
         Pageable pageable = PageRequest.of(0, 1);
         Principal connectedUser = mock(Principal.class);
-        Comment comment = testComment().withCommentableId(commentableId);
+
+        Comment comment = Comment.builder()
+                .commentableId(commentableId)
+                .content(testComment().content())
+                .type(testComment().type())
+                .rating(testComment().rating())
+                .build();
+
         CommentResponseDTO commentResponseDTO = testCommentResponseDTO();
 
         List<CommentResponseDTO> commentResponseDTOs = List.of(commentResponseDTO);
         Page<CommentResponseDTO> commentResponseDTOPage = new PageImpl<>(commentResponseDTOs, pageable, 1);
 
 
-        when(commentService.getCommentsByCommentableId(anyLong(), any(CommentableType.class), any(Principal.class),
+        when(commentServiceImpl.getCommentsByCommentableId(anyLong(), any(CommentableType.class), any(Principal.class),
                 any(Pageable.class))).thenReturn(new PageImpl<>(List.of(comment), pageable, 1));
         when(commentResponseMapper.mapToDTO(comment)).thenReturn(commentResponseDTO);
 
@@ -95,7 +102,7 @@ class CommentControllerTest {
         Principal connectedUser = mock(Principal.class);
 
         when(commentRequestMapper.map(commentRequestDTO)).thenReturn(comment);
-        when(commentService.addCommentToCommentable(commentableId, type, comment, connectedUser))
+        when(commentServiceImpl.addCommentToCommentable(commentableId, type, comment, connectedUser))
                 .thenReturn(comment);
         when(commentResponseMapper.mapToDTO(comment)).thenReturn(commentResponseDTO);
 
@@ -123,7 +130,7 @@ class CommentControllerTest {
         Principal connectedUser = mock(Principal.class);
 
         when(commentRequestMapper.map(commentRequestDTO)).thenReturn(commentToUpdate);
-        when(commentService.updateComment(commentId, commentToUpdate, connectedUser)).thenReturn(commentToUpdate);
+        when(commentServiceImpl.updateComment(commentId, commentToUpdate, connectedUser)).thenReturn(commentToUpdate);
         when(commentResponseMapper.mapToDTO(commentToUpdate)).thenReturn(commentResponseDTO);
 
         //when, then
@@ -145,7 +152,7 @@ class CommentControllerTest {
         Long commentId = 1L;
         Principal connectedUser = mock(Principal.class);
 
-        doNothing().when(commentService).deleteCommentById(commentId, connectedUser);
+        doNothing().when(commentServiceImpl).deleteCommentById(commentId, connectedUser);
         //when, then
         mockMvc.perform(delete(DELETE_COMMENT_BY_ID.replace("{commentId}", commentId.toString()))
                         .principal(connectedUser))

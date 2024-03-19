@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cottageconnect.security.UserService;
 import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
-import pl.cottageconnect.security.service.UserService;
 
 import java.security.Principal;
 

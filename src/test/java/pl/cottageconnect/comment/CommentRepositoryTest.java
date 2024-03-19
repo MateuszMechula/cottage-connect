@@ -1,0 +1,99 @@
+package pl.cottageconnect.comment;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static pl.cottageconnect.comment.TestDataFactoryComment.*;
+
+@ExtendWith(MockitoExtension.class)
+class CommentRepositoryTest {
+    @Mock
+    private CommentJpaRepository commentJpaRepository;
+    @Mock
+    private CommentEntityMapper commentEntityMapper;
+    @InjectMocks
+    private CommentRepository commentRepository;
+
+    @Test
+    void shouldFindCommentByIdSuccessfully() {
+        //given
+        Long commentId = 1L;
+        Comment comment = testComment2();
+        CommentEntity commentEntity = testCommentEntity();
+
+        when(commentJpaRepository.findById(commentId)).thenReturn(Optional.ofNullable(commentEntity));
+        when(commentEntityMapper.mapFromEntity(commentEntity)).thenReturn(comment);
+        //when
+        Optional<Comment> commentById = commentRepository.findCommentById(commentId);
+        //then
+        verify(commentJpaRepository, times(1)).findById(commentId);
+        assertTrue(commentById.isPresent());
+        Comment commentFound = commentById.get();
+        assertAll(
+                () -> assertEquals(comment.commentId(), commentFound.commentId()),
+                () -> assertEquals(comment.content(), commentFound.content()),
+                () -> assertEquals(comment.rating(), commentFound.rating()),
+                () -> assertEquals(comment.type(), commentFound.type()),
+                () -> assertEquals(comment.commentableId(), commentFound.commentableId())
+        );
+    }
+
+    @Test
+    void shouldGetCommentsByCommentableIdSuccessfully() {
+        //given
+        Long commentableId = 1L;
+        Pageable pageable = mock(Pageable.class);
+        List<CommentEntity> comments = new ArrayList<>();
+        comments.add(testCommentEntity());
+        comments.add(testCommentEntity2());
+        Page<CommentEntity> pageComments = new PageImpl<>(comments);
+
+        when(commentJpaRepository.getCommentsByCommentableId(commentableId, pageable)).thenReturn(pageComments);
+        when(commentEntityMapper.mapFromEntity(any(CommentEntity.class))).thenReturn(testComment3());
+        //when
+        Page<Comment> commentsByCommentableId = commentRepository.getCommentsByCommentableId(commentableId, pageable);
+        //then
+        assertEquals(2, commentsByCommentableId.getTotalElements());
+        assertEquals(testComment3(), commentsByCommentableId.getContent().get(0));
+        assertEquals(testComment4(), commentsByCommentableId.getContent().get(1));
+    }
+
+    @Test
+    void shouldAddCommentSuccessfully() {
+        //given
+        Comment comment = testComment3();
+
+        when(commentEntityMapper.mapToEntity(comment)).thenReturn(testCommentEntity());
+        when(commentJpaRepository.save(any(CommentEntity.class))).thenReturn(testCommentEntity());
+        when(commentEntityMapper.mapFromEntity(any(CommentEntity.class))).thenReturn(comment);
+        //when
+        Comment commentSaved = commentRepository.addComment(comment);
+        //then
+        verify(commentJpaRepository, times(1)).save(any(CommentEntity.class));
+        assertEquals(comment, commentSaved);
+    }
+
+    @Test
+    void shouldDeleteCommentByIdSuccessfully() {
+        //given
+        Long commentId = 1L;
+
+        doNothing().when(commentJpaRepository).deleteById(commentId);
+        //when
+        commentRepository.deleteCommentById(commentId);
+        //then
+        verify(commentJpaRepository, times(1)).deleteById(commentId);
+    }
+}

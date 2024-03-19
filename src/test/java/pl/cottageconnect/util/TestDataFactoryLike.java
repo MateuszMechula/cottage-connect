@@ -1,9 +1,9 @@
 package pl.cottageconnect.util;
 
+import pl.cottageconnect.like.Like;
+import pl.cottageconnect.like.LikeEntity;
+import pl.cottageconnect.like.LikeableType;
 import pl.cottageconnect.like.controller.dto.LikeDTO;
-import pl.cottageconnect.like.domain.Like;
-import pl.cottageconnect.like.entity.LikeEntity;
-import pl.cottageconnect.like.enums.LikeableType;
 
 public class TestDataFactoryLike {
 

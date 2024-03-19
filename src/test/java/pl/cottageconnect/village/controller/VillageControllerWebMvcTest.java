@@ -7,11 +7,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.cottageconnect.security.configuration.JwtAuthFilter;
+import pl.cottageconnect.security.JwtAuthFilter;
+import pl.cottageconnect.village.Village;
+import pl.cottageconnect.village.VillageService;
 import pl.cottageconnect.village.controller.dto.VillageDTO;
 import pl.cottageconnect.village.controller.dto.mapper.VillageMapper;
-import pl.cottageconnect.village.domain.Village;
-import pl.cottageconnect.village.service.VillageService;
 
 import java.security.Principal;
 
@@ -54,11 +54,11 @@ class VillageControllerWebMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(villageDTO.name()))
                 .andExpect(jsonPath("$.description").value(villageDTO.description()))
-                .andExpect(jsonPath("$.addressDTO.street").value(villageDTO.addressDTO().getStreet()))
-                .andExpect(jsonPath("$.addressDTO.postalCode").value(villageDTO.addressDTO().getPostalCode()))
-                .andExpect(jsonPath("$.addressDTO.city").value(villageDTO.addressDTO().getCity()))
-                .andExpect(jsonPath("$.addressDTO.voivodeship").value(villageDTO.addressDTO().getVoivodeship()))
-                .andExpect(jsonPath("$.addressDTO.country").value(villageDTO.addressDTO().getCountry()));
+                .andExpect(jsonPath("$.addressDTO.street").value(villageDTO.addressDTO().street()))
+                .andExpect(jsonPath("$.addressDTO.postalCode").value(villageDTO.addressDTO().postalCode()))
+                .andExpect(jsonPath("$.addressDTO.city").value(villageDTO.addressDTO().city()))
+                .andExpect(jsonPath("$.addressDTO.voivodeship").value(villageDTO.addressDTO().voivodeship()))
+                .andExpect(jsonPath("$.addressDTO.country").value(villageDTO.addressDTO().country()));
     }
 
     @Test

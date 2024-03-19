@@ -6,11 +6,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.cottageconnect.like.Like;
+import pl.cottageconnect.like.LikeService;
+import pl.cottageconnect.like.LikeableType;
 import pl.cottageconnect.like.controller.dto.LikeDTO;
 import pl.cottageconnect.like.controller.dto.mapper.LikeMapper;
-import pl.cottageconnect.like.domain.Like;
-import pl.cottageconnect.like.enums.LikeableType;
-import pl.cottageconnect.like.service.LikeService;
 
 import java.security.Principal;
 

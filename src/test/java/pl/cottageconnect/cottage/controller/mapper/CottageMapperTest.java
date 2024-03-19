@@ -2,8 +2,8 @@ package pl.cottageconnect.cottage.controller.mapper;
 
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import pl.cottageconnect.cottage.Cottage;
 import pl.cottageconnect.cottage.controller.dto.CottageDTO;
-import pl.cottageconnect.cottage.domain.Cottage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static pl.cottageconnect.util.TestDataFactoryCottage.testCottage;
@@ -21,11 +21,11 @@ class CottageMapperTest {
         //when
         Cottage cottage = cottageMapper.map(cottageDTO);
         //then
-        assertEquals(expectedCottage.getCottageId(), cottage.getCottageId());
-        assertEquals(expectedCottage.getCottageNumber(), cottage.getCottageNumber());
-        assertEquals(expectedCottage.getCottageSize(), cottage.getCottageSize());
-        assertEquals(expectedCottage.getPrice(), cottage.getPrice());
-        assertEquals(expectedCottage.getDescription(), cottage.getDescription());
+        assertEquals(expectedCottage.cottageId(), cottage.cottageId());
+        assertEquals(expectedCottage.cottageNumber(), cottage.cottageNumber());
+        assertEquals(expectedCottage.cottageSize(), cottage.cottageSize());
+        assertEquals(expectedCottage.price(), cottage.price());
+        assertEquals(expectedCottage.description(), cottage.description());
     }
 
     @Test

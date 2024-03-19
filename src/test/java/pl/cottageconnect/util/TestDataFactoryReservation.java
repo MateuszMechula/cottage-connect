@@ -1,9 +1,9 @@
 package pl.cottageconnect.util;
 
+import pl.cottageconnect.cottage.Cottage;
 import pl.cottageconnect.cottage.controller.dto.CottageDTO;
-import pl.cottageconnect.cottage.domain.Cottage;
+import pl.cottageconnect.reservation.Reservation;
 import pl.cottageconnect.reservation.controller.dto.ReservationDTO;
-import pl.cottageconnect.reservation.domain.Reservation;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
