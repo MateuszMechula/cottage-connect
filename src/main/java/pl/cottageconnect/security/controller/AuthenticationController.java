@@ -7,27 +7,38 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cottageconnect.security.UserService;
+import pl.cottageconnect.security.controller.dto.AccountDetailsDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 
-import static pl.cottageconnect.security.controller.AuthenticationController.BASE_PATH;
+import java.security.Principal;
+
+import static pl.cottageconnect.security.controller.AuthenticationController.Routes.*;
 
 @RestController
-@RequestMapping(value = BASE_PATH)
 @RequiredArgsConstructor
 @Tag(name = "auth", description = "Endpoints for user authentication")
 public class AuthenticationController {
-    public static final String BASE_PATH = "/api/v1/auth";
-    public static final String REGISTER_PATH = "/register";
-    public static final String AUTHENTICATE_PATH = "/authenticate";
 
     private final UserService service;
+
+    @Operation(
+            summary = "Find all information about user",
+            description = "Retrieve the complete account details for the currently authenticated user"
+    )
+    @GetMapping(value = ACCOUNT_DETAILS)
+    public ResponseEntity<AccountDetailsDTO> getAccountDetails(
+            Principal connectedUser) {
+
+        AccountDetailsDTO userDetails = service.getUserDetails(connectedUser);
+        return ResponseEntity.status(HttpStatus.OK).body(userDetails);
+    }
 
     @Operation(
             summary = "Register a new user",
@@ -51,6 +62,13 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
         return service.authenticate(authenticationRequestDTO);
+    }
+
+    public static final class Routes {
+        public static final String BASE_PATH = "/api/v1/auth";
+        public static final String REGISTER_PATH = BASE_PATH + "/register";
+        public static final String AUTHENTICATE_PATH = BASE_PATH + "/authenticate";
+        public static final String ACCOUNT_DETAILS = BASE_PATH + "/account/details";
     }
 }
 

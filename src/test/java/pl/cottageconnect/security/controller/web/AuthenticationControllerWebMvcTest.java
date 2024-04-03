@@ -20,7 +20,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.cottageconnect.security.controller.AuthenticationController.*;
+import static pl.cottageconnect.security.controller.AuthenticationController.Routes.AUTHENTICATE_PATH;
+import static pl.cottageconnect.security.controller.AuthenticationController.Routes.REGISTER_PATH;
 import static pl.cottageconnect.util.TestDataFactoryUser.*;
 
 @WebMvcTest(value = AuthenticationController.class)
@@ -45,7 +46,7 @@ class AuthenticationControllerWebMvcTest {
         when(userService.register(request)).thenReturn(response);
 
         //when,then
-        mockMvc.perform(post(BASE_PATH + REGISTER_PATH)
+        mockMvc.perform(post(REGISTER_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isCreated())
@@ -63,7 +64,7 @@ class AuthenticationControllerWebMvcTest {
 
         when(userService.authenticate(request)).thenReturn(response);
         //when,then
-        mockMvc.perform(post(BASE_PATH + AUTHENTICATE_PATH)
+        mockMvc.perform(post(AUTHENTICATE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())

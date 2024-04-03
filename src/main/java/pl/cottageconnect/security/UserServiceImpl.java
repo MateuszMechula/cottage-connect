@@ -13,10 +13,7 @@ import pl.cottageconnect.customer.Customer;
 import pl.cottageconnect.customer.CustomerService;
 import pl.cottageconnect.owner.Owner;
 import pl.cottageconnect.owner.OwnerService;
-import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
-import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
-import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
-import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
+import pl.cottageconnect.security.controller.dto.*;
 import pl.cottageconnect.security.exception.*;
 
 import java.security.Principal;
@@ -39,6 +36,24 @@ class UserServiceImpl implements UserService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+
+    @Override
+    public AccountDetailsDTO getUserDetails(Principal connectedUser) {
+        User user = getConnectedUser(connectedUser);
+        String role = user.roles().stream().findAny()
+                .map(Role::role)
+                .orElse(null);
+
+
+        return Optional.ofNullable(role)
+                .filter(r -> r.equals(RoleEnum.OWNER.toString()))
+                .map(r -> ownerService.findOwnerByUserId(user.userId()))
+                .map(owner -> createAccountDetailsDTO(user, owner, role))
+                .orElseGet(() -> {
+                    Customer customer = customerService.findCustomerByUserId(user.userId());
+                    return createAccountDetailsDTO(user, customer, role);
+                });
+    }
 
     @Transactional
     public void getUserByUserId(Integer userId, Principal connectedUser) {
@@ -127,12 +142,22 @@ class UserServiceImpl implements UserService {
         return getUserByUsername(email);
     }
 
+    private AccountDetailsDTO createAccountDetailsDTO(User user, Person person, String role) {
+        return AccountDetailsDTO.builder()
+                .email(user.email())
+                .role(role)
+                .firstname(person.firstname())
+                .lastname(person.lastname())
+                .phone(person.phone())
+                .build();
+    }
+
     private void createRoleSpecificEntity(RegistrationRequestDTO request, Integer userId) {
-        if (request.role().equals("OWNER")) {
+        if (request.role().equals(RoleEnum.OWNER.toString())) {
             Owner owner = buildOwner(request, userId);
             ownerService.save(owner);
 
-        } else if (request.role().equals("CUSTOMER")) {
+        } else if (request.role().equals(RoleEnum.CUSTOMER.toString())) {
             Customer customer = buildCustomer(request, userId);
             customerService.save(customer);
         } else {

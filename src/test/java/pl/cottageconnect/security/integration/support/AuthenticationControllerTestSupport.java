@@ -6,7 +6,8 @@ import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
 import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
 import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
 
-import static pl.cottageconnect.security.controller.AuthenticationController.*;
+import static pl.cottageconnect.security.controller.AuthenticationController.Routes.AUTHENTICATE_PATH;
+import static pl.cottageconnect.security.controller.AuthenticationController.Routes.REGISTER_PATH;
 
 public interface AuthenticationControllerTestSupport {
 
@@ -17,7 +18,7 @@ public interface AuthenticationControllerTestSupport {
 
         return requestSpecification()
                 .body(registrationRequestDTO)
-                .post(BASE_PATH + REGISTER_PATH)
+                .post(REGISTER_PATH)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -30,7 +31,7 @@ public interface AuthenticationControllerTestSupport {
 
         return requestSpecification()
                 .body(authenticationRequestDTO)
-                .post(BASE_PATH + AUTHENTICATE_PATH)
+                .post(AUTHENTICATE_PATH)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .extract()

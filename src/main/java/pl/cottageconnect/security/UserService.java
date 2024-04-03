@@ -1,9 +1,6 @@
 package pl.cottageconnect.security;
 
-import pl.cottageconnect.security.controller.dto.AuthenticationRequestDTO;
-import pl.cottageconnect.security.controller.dto.AuthenticationResponseDTO;
-import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
-import pl.cottageconnect.security.controller.dto.RegistrationRequestDTO;
+import pl.cottageconnect.security.controller.dto.*;
 
 import java.security.Principal;
 
@@ -23,4 +20,6 @@ public interface UserService {
     User getUserByUsername(String email);
 
     User getConnectedUser(Principal connectedUser);
+
+    AccountDetailsDTO getUserDetails(Principal connectedUser);
 }
