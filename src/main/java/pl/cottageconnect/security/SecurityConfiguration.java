@@ -22,12 +22,15 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfiguration {
+    public static final String ROLE_OWNER = "OWNER";
+    public static final String ROLE_CUSTOMER = "CUSTOMER";
 
     private final JwtAuthFilter authFilter;
     private final CottageConnectUserDetailsService cottageConnectUserDetailsService;
@@ -45,15 +48,15 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
-                        .requestMatchers("/api/v1/auth/account/details").hasAnyAuthority("OWNER", "CUSTOMER")
+                        .requestMatchers("/api/v1/auth/account/details").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                         .requestMatchers("/api/v1/users").authenticated()
-                        .requestMatchers("/api/v1/villages/**", "/api/v1/village-posts/**").hasAuthority("OWNER")
-                        .requestMatchers("/api/v1/cottages/**").hasAuthority("OWNER")
+                        .requestMatchers("/api/v1/villages/**", "/api/v1/village-posts/**").hasAuthority(ROLE_OWNER)
+                        .requestMatchers("/api/v1/cottages/**").hasAuthority(ROLE_OWNER)
                         .requestMatchers("/api/v1/commentables/{commentableId}/comments", "/api/v1/comments/**")
-                        .hasAnyAuthority("OWNER", "CUSTOMER")
-                        .requestMatchers("/api/v1/likes/**").hasAnyAuthority("OWNER", "CUSTOMER")
-                        .requestMatchers("/api/v1/photos/**").hasAnyAuthority("OWNER", "CUSTOMER")
-                        .requestMatchers("/api/v1/reservations/**").hasAnyAuthority("OWNER", "CUSTOMER")
+                        .hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
+                        .requestMatchers("/api/v1/likes/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
+                        .requestMatchers("/api/v1/photos/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
+                        .requestMatchers("/api/v1/reservations/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -83,8 +86,8 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -11,4 +11,6 @@ public interface PhotoService {
     void addPhoto(Long photoableId, PhotoableType type, Principal connectedUser, MultipartFile file) throws IOException;
 
     void deletePhoto(Long photoId, Principal connectedUser) throws IOException;
+
+    Photo getPhotoByUserId(Principal connectedUser);
 }

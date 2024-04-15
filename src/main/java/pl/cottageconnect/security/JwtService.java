@@ -4,8 +4,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -25,9 +29,20 @@ public class JwtService {
 
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
+    private final UserDetailsService detailsService;
+
+    public JwtService(@Qualifier("cottageConnectUserDetailsService") @Autowired UserDetailsService detailsService) {
+        this.detailsService = detailsService;
+    }
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
+        UserDetails userDetails = detailsService.loadUserByUsername(username);
+        String role = userDetails.getAuthorities().stream()
+                .findAny()
+                .map(GrantedAuthority::getAuthority)
+                .orElse("DEFAULT_ROLE");
+        claims.put("role", role);
         return createToken(claims, username);
     }
 

@@ -19,6 +19,12 @@ class PhotoRepository implements PhotoDAO {
     }
 
     @Override
+    public Optional<Photo> findPhotoByUserId(Integer userId) {
+        return photoJpaRepository.findByPhotoableId(Long.valueOf(userId))
+                .map(photoEntityMapper::mapFromEntity);
+    }
+
+    @Override
     public void addPhoto(Photo photo) {
         PhotoEntity photoToSave = photoEntityMapper.mapToEntity(photo);
         photoJpaRepository.save(photoToSave);
