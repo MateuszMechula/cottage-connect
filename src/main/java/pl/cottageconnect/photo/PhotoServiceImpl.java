@@ -2,6 +2,7 @@ package pl.cottageconnect.photo;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.cottageconnect.common.exception.exceptions.NotFoundException;
@@ -11,7 +12,6 @@ import pl.cottageconnect.security.UserService;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Optional;
 
 import static pl.cottageconnect.photo.PhotoServiceImpl.ErrorMessages.*;
 
@@ -32,14 +32,13 @@ class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Photo getPhotoByUserId(Principal connectedUser) {
+    public Resource getPhotoByUserId(Principal connectedUser) {
         User user = userService.getConnectedUser(connectedUser);
         Integer userId = user.userId();
-        if (Optional.ofNullable(userId).isPresent()) {
-            return photoDAO.findPhotoByUserId(user.userId())
-                    .orElseThrow(() -> new NotFoundException(PHOTO_BY_USER_ID_NOT_FOUND.formatted(userId)));
-        }
-        return null;
+        Photo photo = photoDAO.findPhotoByUserId(user.userId())
+                .orElseThrow(() -> new NotFoundException(PHOTO_BY_USER_ID_NOT_FOUND.formatted(userId)));
+        return fileStorageService.loadImageAsResource(photo.path());
+
     }
 
     @Override

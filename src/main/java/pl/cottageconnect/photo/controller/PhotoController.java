@@ -4,14 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.cottageconnect.photo.Photo;
 import pl.cottageconnect.photo.PhotoService;
 import pl.cottageconnect.photo.PhotoableType;
-import pl.cottageconnect.photo.controller.dto.PhotoDTO;
-import pl.cottageconnect.photo.controller.mapper.PhotoMapper;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -26,13 +24,10 @@ import static pl.cottageconnect.photo.controller.PhotoController.Routes.*;
 public class PhotoController {
 
     private final PhotoService photoService;
-    private final PhotoMapper photoMapper;
 
     @GetMapping(value = USER_PHOTO)
-    public ResponseEntity<PhotoDTO> getUserPhoto(Principal connectedUser) {
-        Photo photo = photoService.getPhotoByUserId(connectedUser);
-        PhotoDTO photoDTO = photoMapper.mapToDTO(photo);
-        return ResponseEntity.ok().body(photoDTO);
+    public Resource getUserPhoto(Principal connectedUser) {
+        return photoService.getPhotoByUserId(connectedUser);
     }
 
     @Operation(
