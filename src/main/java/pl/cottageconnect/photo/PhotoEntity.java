@@ -20,6 +20,7 @@ public class PhotoEntity {
     private Long photoId;
 
     @Column(name = "photoable_type")
+    @Enumerated(EnumType.STRING)
     private PhotoableType type;
 
     @Column(name = "photoable_id")

@@ -25,6 +25,9 @@ public class PhotoController {
 
     private final PhotoService photoService;
 
+    @Operation(
+            summary = "Get user photo",
+            description = "Endpoint to get user photo")
     @GetMapping(value = USER_PHOTO)
     public Resource getUserPhoto(Principal connectedUser) {
         return photoService.getPhotoByUserId(connectedUser);
@@ -32,7 +35,8 @@ public class PhotoController {
 
     @Operation(
             summary = "Add Photo",
-            description = "Endpoint to add a new photo for COTTAGE, USER")
+            description = "Endpoint to add a new photo for COTTAGE, USER and VILLAGE" +
+                    "USER max photo value = 1, COTTAGE max photo value = 5, VILLAGE max photo value = 1")
     @PostMapping(value = ADD_PHOTO)
     public ResponseEntity<Void> addPhoto(@PathVariable Long photoableId,
                                          @RequestParam("type") PhotoableType type,

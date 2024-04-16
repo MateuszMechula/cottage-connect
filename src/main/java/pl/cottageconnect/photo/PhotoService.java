@@ -9,9 +9,9 @@ import java.security.Principal;
 public interface PhotoService {
     Photo getPhotoById(Long photoId);
 
+    Resource getPhotoByUserId(Principal connectedUser);
+
     void addPhoto(Long photoableId, PhotoableType type, Principal connectedUser, MultipartFile file) throws IOException;
 
     void deletePhoto(Long photoId, Principal connectedUser) throws IOException;
-
-    Resource getPhotoByUserId(Principal connectedUser);
 }

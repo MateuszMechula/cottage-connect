@@ -8,6 +8,8 @@ public interface VillageService {
 
     List<Village> findAllVillage(Principal connectedUser);
 
+    void checkVillageId(Long villageId, Principal connectedUser);
+
     Village updateVillage(Long villageId, Village toUpdate, Principal principal);
 
     Village addVillage(Village village, Principal connectedUser);

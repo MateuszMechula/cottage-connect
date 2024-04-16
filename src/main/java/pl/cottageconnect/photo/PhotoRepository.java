@@ -25,6 +25,11 @@ class PhotoRepository implements PhotoDAO {
     }
 
     @Override
+    public Long countByPhotoableIdAndType(Long photoableId, PhotoableType type) {
+        return photoJpaRepository.countByPhotoableIdAndType(photoableId, type);
+    }
+
+    @Override
     public void addPhoto(Photo photo) {
         PhotoEntity photoToSave = photoEntityMapper.mapToEntity(photo);
         photoJpaRepository.save(photoToSave);

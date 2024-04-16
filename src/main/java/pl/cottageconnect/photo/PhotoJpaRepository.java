@@ -6,4 +6,6 @@ import java.util.Optional;
 
 interface PhotoJpaRepository extends JpaRepository<PhotoEntity, Long> {
     Optional<PhotoEntity> findByPhotoableId(Long userId);
+
+    Long countByPhotoableIdAndType(Long photoableId, PhotoableType type);
 }
