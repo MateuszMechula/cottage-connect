@@ -3,6 +3,7 @@ package pl.cottageconnect.photo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,9 +20,9 @@ class PhotoRepository implements PhotoDAO {
     }
 
     @Override
-    public Optional<Photo> findPhotoByUserId(Integer userId) {
-        return photoJpaRepository.findByPhotoableId(Long.valueOf(userId))
-                .map(photoEntityMapper::mapFromEntity);
+    public List<Photo> findPhotoByPhotoableId(Long photoableId) {
+        return photoJpaRepository.findByPhotoableId(photoableId).stream()
+                .map(photoEntityMapper::mapFromEntity).toList();
     }
 
     @Override

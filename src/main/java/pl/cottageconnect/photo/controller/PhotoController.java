@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +12,7 @@ import pl.cottageconnect.photo.PhotoableType;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 import static pl.cottageconnect.photo.controller.PhotoController.Routes.*;
 
@@ -26,11 +26,15 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @Operation(
-            summary = "Get user photo",
-            description = "Endpoint to get user photo")
-    @GetMapping(value = USER_PHOTO)
-    public Resource getUserPhoto(Principal connectedUser) {
-        return photoService.getPhotoByUserId(connectedUser);
+            summary = "Get photos",
+            description = "Endpoint to get photos")
+    @GetMapping(value = GET_PHOTOS)
+    public ResponseEntity<List<String>> getPhotoUrlsByPhotoableId(@PathVariable Long photoableId,
+                                                                  @RequestParam("type") PhotoableType type,
+                                                                  Principal connectedUser) {
+        List<String> photoUrls = photoService.getPhotosByPhotoableId(photoableId, type, connectedUser);
+
+        return ResponseEntity.ok().body(photoUrls);
     }
 
     @Operation(
@@ -43,7 +47,7 @@ public class PhotoController {
                                          @RequestParam("file") MultipartFile file,
                                          Principal connectedUser
     ) throws IOException {
-        photoService.addPhoto(photoableId, type, connectedUser, file);
+        photoService.uploadPhoto(photoableId, type, connectedUser, file);
         return ResponseEntity.ok().build();
     }
 
@@ -58,7 +62,7 @@ public class PhotoController {
 
     static final class Routes {
         static final String ROOT = "/api/v1/photos";
-        static final String USER_PHOTO = "/api/v1/photos/user";
+        static final String GET_PHOTOS = ROOT + "/{photoableId}";
         static final String ADD_PHOTO = ROOT + "/{photoableId}";
         static final String DELETE_PHOTO = ROOT + "/{photoId}";
     }

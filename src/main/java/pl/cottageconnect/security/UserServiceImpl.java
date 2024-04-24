@@ -144,6 +144,7 @@ class UserServiceImpl implements UserService {
 
     private AccountDetailsDTO createAccountDetailsDTO(User user, Person person, String role) {
         return AccountDetailsDTO.builder()
+                .userId(user.userId())
                 .email(user.email())
                 .role(role)
                 .firstname(person.firstname())

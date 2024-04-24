@@ -42,7 +42,7 @@ class PhotoControllerTest {
                 "Hello, World!".getBytes());
         Principal connectedUser = mock(Principal.class);
 
-        doNothing().when(photoService).addPhoto(photoableId, type, connectedUser, file);
+        doNothing().when(photoService).uploadPhoto(photoableId, type, connectedUser, file);
         //when,then
         mockMvc.perform(multipart(ADD_PHOTO, photoableId)
                         .file(file)

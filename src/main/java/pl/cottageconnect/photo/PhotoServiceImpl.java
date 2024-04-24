@@ -5,16 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.cottageconnect.common.exception.exceptions.FileStorageException;
 import pl.cottageconnect.common.exception.exceptions.MaxPhotoCountExceededException;
 import pl.cottageconnect.common.exception.exceptions.NotFoundException;
 import pl.cottageconnect.cottage.CottageService;
-import pl.cottageconnect.security.User;
 import pl.cottageconnect.security.UserService;
 import pl.cottageconnect.village.VillageService;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static pl.cottageconnect.photo.PhotoServiceImpl.ErrorMessages.*;
 
@@ -29,6 +33,7 @@ class PhotoServiceImpl implements PhotoService {
             PhotoableType.COTTAGE, MAX_COTTAGE_PHOTO_VALUE,
             PhotoableType.VILLAGE, MAX_VILLAGE_PHOTO_VALUE
     );
+    private static final String PHOTO_URL = "http://localhost:8080/images/";
 
     private final PhotoDAO photoDAO;
     private final UserService userService;
@@ -44,18 +49,27 @@ class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Resource getPhotoByUserId(Principal connectedUser) {
-        User user = userService.getConnectedUser(connectedUser);
-        Integer userId = user.userId();
-        Photo photo = photoDAO.findPhotoByUserId(user.userId())
-                .orElseThrow(() -> new NotFoundException(PHOTO_BY_USER_ID_NOT_FOUND.formatted(userId)));
-        return fileStorageService.loadImageAsResource(photo.path());
+    @Transactional
+    public List<String> getPhotosByPhotoableId(Long photoableId, PhotoableType type, Principal connectedUser) {
+        validatePhotoable(photoableId, type, connectedUser);
+
+        List<Photo> photos = photoDAO.findPhotoByPhotoableId(photoableId);
+        if (photos.isEmpty()) {
+            throw new NotFoundException(PHOTO_BY_PHOTOABLE_ID_NOT_FOUND.formatted(photoableId));
+        }
+
+        List<Resource> resourceList = photos.stream()
+                .map(photo -> fileStorageService.loadImageAsResource(photo.path()))
+                .toList();
+        return resourceList.stream()
+                .map(convertPhotoUrl())
+                .toList();
 
     }
 
     @Override
     @Transactional
-    public void addPhoto(Long photoableId, PhotoableType type, Principal connectedUser, MultipartFile file)
+    public void uploadPhoto(Long photoableId, PhotoableType type, Principal connectedUser, MultipartFile file)
             throws IOException {
 
         validatePhotoable(photoableId, type, connectedUser);
@@ -80,6 +94,17 @@ class PhotoServiceImpl implements PhotoService {
         fileStorageService.deleteImageFromFileSystem(photoPath);
 
         photoDAO.deleteById(photoId);
+    }
+
+    private Function<Resource, String> convertPhotoUrl() {
+        return resource -> {
+            try {
+                String filename = Paths.get(resource.getURL().toURI()).getFileName().toString();
+                return PHOTO_URL + filename;
+            } catch (IOException | URISyntaxException e) {
+                throw new FileStorageException(GENERATE_URL_FAILED, e);
+            }
+        };
     }
 
     private void checkPhotoLimit(PhotoableType type, Long photoCount) {
@@ -108,7 +133,8 @@ class PhotoServiceImpl implements PhotoService {
     static final class ErrorMessages {
         static final String UNSUPPORTED_PHOTOABLE_TYPE = "Unsupported photoable Type: [%s]";
         static final String PHOTO_NOT_FOUND = "Photo with ID: [%s] not found or you dont have access";
-        static final String PHOTO_BY_USER_ID_NOT_FOUND = "Photo by user ID: [%s] not found or you dont have access";
+        static final String PHOTO_BY_PHOTOABLE_ID_NOT_FOUND = "Photo by photoable ID: [%s] not found or you dont have access";
         static final String MAX_PHOTO_LIMIT = "Max photo limit exceeded for type: ";
+        static final String GENERATE_URL_FAILED = "Failed to generate URL for photo";
     }
 }

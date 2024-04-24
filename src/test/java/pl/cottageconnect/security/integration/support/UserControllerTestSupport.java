@@ -5,7 +5,7 @@ import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
 import pl.cottageconnect.security.controller.dto.ChangePasswordRequestDTO;
 
-import static pl.cottageconnect.security.controller.UserController.BASE_PATH;
+import static pl.cottageconnect.security.controller.UserController.Routes.BASE_PATH;
 
 public interface UserControllerTestSupport {
 

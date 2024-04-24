@@ -72,7 +72,7 @@ class PhotoServiceImplTest {
 
         when(fileStorageService.saveImageToFileSystem(file)).thenReturn(fileName);
         //when
-        photoServiceImpl.addPhoto(photoableId, type, connectedUser, file);
+        photoServiceImpl.uploadPhoto(photoableId, type, connectedUser, file);
         //then
         verify(photoDAO, times(1)).addPhoto(any(Photo.class));
         verify(cottageServiceImpl, times(1)).getCottageWithCheck(photoableId, connectedUser);
@@ -90,7 +90,7 @@ class PhotoServiceImplTest {
 
         when(fileStorageService.saveImageToFileSystem(file)).thenReturn(fileName);
         //when
-        photoServiceImpl.addPhoto(photoableId, type, connectedUser, file);
+        photoServiceImpl.uploadPhoto(photoableId, type, connectedUser, file);
         //then
         verify(photoDAO, times(1)).addPhoto(any(Photo.class));
         verify(userService, times(1)).getUserByUserId(Math.toIntExact(photoableId), connectedUser);
@@ -107,7 +107,7 @@ class PhotoServiceImplTest {
 
         //when,then
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> photoServiceImpl.addPhoto(photoableId, type, connectedUser, file));
+                () -> photoServiceImpl.uploadPhoto(photoableId, type, connectedUser, file));
         assertEquals(PhotoServiceImpl.ErrorMessages.UNSUPPORTED_PHOTOABLE_TYPE.formatted(photoableId), exception.getMessage());
 
     }

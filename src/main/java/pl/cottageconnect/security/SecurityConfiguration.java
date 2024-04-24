@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/auth/register", "/api/v1/auth/authenticate").permitAll()
-                        .requestMatchers("/api/v1/auth/account/details").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
+                        .requestMatchers("/api/v1/users/account/details").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                         .requestMatchers("/api/v1/users").authenticated()
                         .requestMatchers("/api/v1/villages/**", "/api/v1/village-posts/**").hasAuthority(ROLE_OWNER)
                         .requestMatchers("/api/v1/cottages/**").hasAuthority(ROLE_OWNER)
@@ -57,6 +57,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/likes/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                         .requestMatchers("/api/v1/photos/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                         .requestMatchers("/api/v1/reservations/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
+                        .requestMatchers("/images/**").hasAnyAuthority(ROLE_OWNER, ROLE_CUSTOMER)
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -20,7 +20,7 @@ import java.security.Principal;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.cottageconnect.security.controller.UserController.BASE_PATH;
+import static pl.cottageconnect.security.controller.UserController.Routes.BASE_PATH;
 
 @WebMvcTest(value = UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
