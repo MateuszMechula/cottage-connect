@@ -13,27 +13,18 @@ import pl.cottageconnect.security.UserService;
 import pl.cottageconnect.village.VillageService;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
+import static pl.cottageconnect.photo.PhotoProperties.PHOTO_LIMITS;
+import static pl.cottageconnect.photo.PhotoProperties.PHOTO_URL;
 import static pl.cottageconnect.photo.PhotoServiceImpl.ErrorMessages.*;
 
 @Service
 @RequiredArgsConstructor
 class PhotoServiceImpl implements PhotoService {
-    private static final Integer MAX_USER_PHOTO_VALUE = 1;
-    private static final Integer MAX_VILLAGE_PHOTO_VALUE = 1;
-    private static final Integer MAX_COTTAGE_PHOTO_VALUE = 5;
-    private static final Map<PhotoableType, Integer> PHOTO_LIMITS = Map.of(
-            PhotoableType.USER, MAX_USER_PHOTO_VALUE,
-            PhotoableType.COTTAGE, MAX_COTTAGE_PHOTO_VALUE,
-            PhotoableType.VILLAGE, MAX_VILLAGE_PHOTO_VALUE
-    );
-    private static final String PHOTO_URL = "http://localhost:8080/images/";
 
     private final PhotoDAO photoDAO;
     private final UserService userService;
@@ -50,21 +41,14 @@ class PhotoServiceImpl implements PhotoService {
 
     @Override
     @Transactional
-    public List<String> getPhotosByPhotoableId(Long photoableId, PhotoableType type, Principal connectedUser) {
+    public List<Photo> getPhotosByPhotoableId(Long photoableId, PhotoableType type, Principal connectedUser) {
         validatePhotoable(photoableId, type, connectedUser);
 
         List<Photo> photos = photoDAO.findPhotoByPhotoableId(photoableId);
         if (photos.isEmpty()) {
             throw new NotFoundException(PHOTO_BY_PHOTOABLE_ID_NOT_FOUND.formatted(photoableId));
         }
-
-        List<Resource> resourceList = photos.stream()
-                .map(photo -> fileStorageService.loadImageAsResource(photo.path()))
-                .toList();
-        return resourceList.stream()
-                .map(convertPhotoUrl())
-                .toList();
-
+        return updatePhotosUrls(photos);
     }
 
     @Override
@@ -96,15 +80,27 @@ class PhotoServiceImpl implements PhotoService {
         photoDAO.deleteById(photoId);
     }
 
-    private Function<Resource, String> convertPhotoUrl() {
-        return resource -> {
+    private List<Photo> updatePhotosUrls(List<Photo> photos) {
+        List<Photo> updatedPhotoList = new ArrayList<>();
+
+        for (Photo photo : photos) {
+            String path = photo.path();
+            Resource resource = fileStorageService.loadImageAsResource(path);
+
             try {
-                String filename = Paths.get(resource.getURL().toURI()).getFileName().toString();
-                return PHOTO_URL + filename;
-            } catch (IOException | URISyntaxException e) {
+                String filename = Paths.get(resource.getURI()).getFileName().toString();
+                Photo updatedPhoto = Photo.builder()
+                        .photoId(photo.photoId())
+                        .type(photo.type())
+                        .photoableId(photo.photoableId())
+                        .path(PHOTO_URL + filename)
+                        .build();
+                updatedPhotoList.add(updatedPhoto);
+            } catch (IOException e) {
                 throw new FileStorageException(GENERATE_URL_FAILED, e);
             }
-        };
+        }
+        return updatedPhotoList;
     }
 
     private void checkPhotoLimit(PhotoableType type, Long photoCount) {

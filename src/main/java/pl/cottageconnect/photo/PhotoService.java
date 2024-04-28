@@ -9,7 +9,7 @@ import java.util.List;
 public interface PhotoService {
     Photo getPhotoById(Long photoId);
 
-    List<String> getPhotosByPhotoableId(Long photoableId, PhotoableType type, Principal connectedUser);
+    List<Photo> getPhotosByPhotoableId(Long photoableId, PhotoableType type, Principal connectedUser);
 
     void uploadPhoto(Long photoableId, PhotoableType type, Principal connectedUser, MultipartFile file) throws IOException;
 

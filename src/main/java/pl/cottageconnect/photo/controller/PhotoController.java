@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.cottageconnect.photo.PhotoService;
 import pl.cottageconnect.photo.PhotoableType;
+import pl.cottageconnect.photo.controller.dto.PhotoDTO;
+import pl.cottageconnect.photo.controller.mapper.PhotoMapper;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -24,15 +26,18 @@ import static pl.cottageconnect.photo.controller.PhotoController.Routes.*;
 public class PhotoController {
 
     private final PhotoService photoService;
+    private final PhotoMapper photoMapper;
 
     @Operation(
             summary = "Get photos",
             description = "Endpoint to get photos")
     @GetMapping(value = GET_PHOTOS)
-    public ResponseEntity<List<String>> getPhotoUrlsByPhotoableId(@PathVariable Long photoableId,
-                                                                  @RequestParam("type") PhotoableType type,
-                                                                  Principal connectedUser) {
-        List<String> photoUrls = photoService.getPhotosByPhotoableId(photoableId, type, connectedUser);
+    public ResponseEntity<List<PhotoDTO>> getPhotoUrlsByPhotoableId(@PathVariable Long photoableId,
+                                                                    @RequestParam("type") PhotoableType type,
+                                                                    Principal connectedUser) {
+        List<PhotoDTO> photoUrls = photoService.getPhotosByPhotoableId(photoableId, type, connectedUser).stream()
+                .map(photoMapper::mapToDTO)
+                .toList();
 
         return ResponseEntity.ok().body(photoUrls);
     }
